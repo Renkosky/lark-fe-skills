@@ -1,4 +1,4 @@
-# Lark FE Task
+# PRD FE Task
 
 English | [中文](#中文)
 
@@ -21,7 +21,7 @@ English | [中文](#中文)
 
 ### Overview
 
-`lark-fe-task` is a Codex skill for turning Lark/Feishu requirement documents into concrete frontend task breakdowns.
+`prd-fe-task` is a Codex skill for turning Lark/Feishu requirement documents into concrete frontend task breakdowns.
 
 It reads a Lark document by title, URL, or token, extracts the requirement content, inspects the configured frontend project path or paths enough to locate likely implementation areas, and writes a Markdown task plan under the configured output directory.
 
@@ -42,11 +42,11 @@ Use this skill when you have a Lark/Feishu PRD, requirement document, or product
 Example prompts:
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +plan <Lark document title>
+[$prd-fe-task](path/to/SKILL.md) +plan <Lark document title>
 ```
 
 ```text
-Use lark-fe-task to split this Lark PRD into FE tasks: <Lark document URL>
+Use prd-fe-task to split this Lark PRD into FE tasks: <Lark document URL>
 ```
 
 ### Prerequisites
@@ -80,13 +80,13 @@ Codex will:
 Run the config workflow once per repository. In Codex, reference the skill and use `+config`:
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +config
+[$prd-fe-task](path/to/SKILL.md) +config
 ```
 
 You can also provide the values directly:
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +config <repo-root> <fe-project-paths> [output-dir]
+[$prd-fe-task](path/to/SKILL.md) +config <repo-root> <fe-project-paths> [output-dir]
 ```
 
 If the frontend paths are omitted, Codex should inspect the repository lightly, propose likely frontend project paths, and ask you to confirm before writing config.
@@ -94,26 +94,26 @@ If the frontend paths are omitted, Codex should inspect the repository lightly, 
 The underlying helper command is:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "<repo-root>" "<fe-project-paths>" "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "<repo-root>" "<fe-project-paths>" "docs/frontend-tasks"
 ```
 
 For a monorepo, pass comma-separated frontend project paths:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "$(pwd)" "apps/web,apps/admin" "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "$(pwd)" "apps/web,apps/admin" "docs/frontend-tasks"
 ```
 
 For a single frontend project repository, use `.`:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "$(pwd)" "." "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "$(pwd)" "." "docs/frontend-tasks"
 ```
 
 This writes:
 
 ```text
 <repo-root>/.lark-fe-task/config.env
-$HOME/.codex/skills/lark-fe-task/config/repos.json
+$HOME/.codex/skills/prd-fe-task/config/repos.json
 ```
 
 The repository-local config is the source for the current repo. The global registry is an index for listing configured repositories and for fallback selection when `+plan` is run outside a configured repo.
@@ -131,13 +131,13 @@ Both store:
 To show all configured repositories, use:
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +list
+[$prd-fe-task](path/to/SKILL.md) +list
 ```
 
 The underlying helper command is:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/list-configs.sh"
+"$HOME/.codex/skills/prd-fe-task/scripts/list-configs.sh"
 ```
 
 This reads the global registry only. It does not scan your home directory.
@@ -147,13 +147,13 @@ This reads the global registry only. It does not scan your home directory.
 To create a task plan from a Lark document, use:
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +plan <Lark document title, URL, or token>
+[$prd-fe-task](path/to/SKILL.md) +plan <Lark document title, URL, or token>
 ```
 
 The underlying helper command is:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/plan-lark-doc.sh" "<document-title-or-url-or-token>" "<repo-root>"
+"$HOME/.codex/skills/prd-fe-task/scripts/plan-lark-doc.sh" "<document-title-or-url-or-token>" "<repo-root>"
 ```
 
 The command fetches the Lark document and prints:
@@ -192,7 +192,7 @@ The generated Markdown includes:
 ### Files
 
 ```text
-lark-fe-task/
+prd-fe-task/
 ├── SKILL.md
 ├── README.md
 ├── agents/
@@ -243,7 +243,7 @@ For the full `lark-fe-skills` project roadmap, see the root README.
 
 ### 概览
 
-`lark-fe-task` 是一个 Codex skill，用于把 Lark/飞书需求文档拆解成可开发的前端任务。
+`prd-fe-task` 是一个 Codex skill，用于把 Lark/飞书需求文档拆解成可开发的前端任务。
 
 它可以根据文档标题、链接或 token 读取 Lark 文档，提取需求内容，适度检查已配置的前端项目路径，然后在已配置的输出目录下生成 Markdown 任务拆分文档。
 
@@ -264,11 +264,11 @@ For the full `lark-fe-skills` project roadmap, see the root README.
 示例：
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +plan <飞书文档标题>
+[$prd-fe-task](path/to/SKILL.md) +plan <飞书文档标题>
 ```
 
 ```text
-使用 lark-fe-task 把这个飞书 PRD 拆成前端任务：<飞书文档链接>
+使用 prd-fe-task 把这个飞书 PRD 拆成前端任务：<飞书文档链接>
 ```
 
 ### 前置条件
@@ -302,13 +302,13 @@ Codex 会：
 每个仓库先运行一次配置流程。在 Codex 里引用 skill 并使用 `+config`：
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +config
+[$prd-fe-task](path/to/SKILL.md) +config
 ```
 
 也可以直接带上配置值：
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +config <repo-root> <fe-project-paths> [output-dir]
+[$prd-fe-task](path/to/SKILL.md) +config <repo-root> <fe-project-paths> [output-dir]
 ```
 
 如果没有提供前端项目路径，Codex 应该轻量检查仓库，给出可能的前端项目路径，并在写入配置前让你确认。
@@ -316,26 +316,26 @@ Codex 会：
 底层辅助命令是：
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "<repo-root>" "<fe-project-paths>" "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "<repo-root>" "<fe-project-paths>" "docs/frontend-tasks"
 ```
 
 monorepo 可以传多个前端项目路径，用英文逗号分隔：
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "$(pwd)" "apps/web,apps/admin" "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "$(pwd)" "apps/web,apps/admin" "docs/frontend-tasks"
 ```
 
 如果仓库本身就是单个前端项目，可以使用 `.`：
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "$(pwd)" "." "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "$(pwd)" "." "docs/frontend-tasks"
 ```
 
 它会写入：
 
 ```text
 <repo-root>/.lark-fe-task/config.env
-$HOME/.codex/skills/lark-fe-task/config/repos.json
+$HOME/.codex/skills/prd-fe-task/config/repos.json
 ```
 
 仓库内配置用于当前项目；全局 registry 用于查看已经配置过哪些仓库，也用于在 `+plan` 不在已配置仓库内执行时做兜底选择。
@@ -353,13 +353,13 @@ $HOME/.codex/skills/lark-fe-task/config/repos.json
 查看所有已配置仓库：
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +list
+[$prd-fe-task](path/to/SKILL.md) +list
 ```
 
 底层辅助命令是：
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/list-configs.sh"
+"$HOME/.codex/skills/prd-fe-task/scripts/list-configs.sh"
 ```
 
 这个命令只读取全局 registry，不会扫描用户目录。
@@ -369,13 +369,13 @@ $HOME/.codex/skills/lark-fe-task/config/repos.json
 根据 Lark 文档生成任务拆分：
 
 ```text
-[$lark-fe-task](path/to/SKILL.md) +plan <飞书文档标题、链接或 token>
+[$prd-fe-task](path/to/SKILL.md) +plan <飞书文档标题、链接或 token>
 ```
 
 底层辅助命令是：
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/plan-lark-doc.sh" "<文档标题或链接或token>" "<repo-root>"
+"$HOME/.codex/skills/prd-fe-task/scripts/plan-lark-doc.sh" "<文档标题或链接或token>" "<repo-root>"
 ```
 
 这个命令会读取 Lark 文档，并输出：
@@ -414,7 +414,7 @@ $HOME/.codex/skills/lark-fe-task/config/repos.json
 ### 文件结构
 
 ```text
-lark-fe-task/
+prd-fe-task/
 ├── SKILL.md
 ├── README.md
 ├── agents/

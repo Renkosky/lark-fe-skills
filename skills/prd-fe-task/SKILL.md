@@ -1,9 +1,9 @@
 ---
-name: lark-fe-task
+name: prd-fe-task
 description: Turn Feishu/Lark requirement documents into concrete frontend task breakdowns. Use when the user provides a Lark document title, URL, or token and asks to read a PRD, requirement doc, or product spec and split it into FE development tasks for configured frontend project paths; supports +config, +list, and +plan shortcuts.
 ---
 
-# Lark FE Task
+# PRD FE Task
 
 ## Overview
 
@@ -11,7 +11,7 @@ Use this skill to produce a development-ready FE task breakdown from a Feishu/La
 
 Default repo root: the current repository root, referred to below as `<repo-root>`  
 Default output directory: `docs/frontend-tasks`  
-Global repository registry: `$HOME/.codex/skills/lark-fe-task/config/repos.json`
+Global repository registry: `$HOME/.codex/skills/prd-fe-task/config/repos.json`
 
 ## Prerequisite
 
@@ -31,12 +31,12 @@ If `lark-cli` is missing, the helper scripts must stop and tell the user to inst
 
 ### +config
 
-Use `+config` when the user wants to initialize or update the repository settings for this skill. Treat prompts such as `+config`, `配置 lark-fe-task`, or `设置前端项目路径` as requests to run the configuration workflow, not as requests to generate a task breakdown.
+Use `+config` when the user wants to initialize or update the repository settings for this skill. Treat prompts such as `+config`, `配置 prd-fe-task`, or `设置前端项目路径` as requests to run the configuration workflow, not as requests to generate a task breakdown.
 
 Run it once per repository before planning tasks. It records the repository root, frontend project path or paths, and output directory in both places:
 
 - `<repo-root>/.lark-fe-task/config.env`: repository-local config.
-- `$HOME/.codex/skills/lark-fe-task/config/repos.json`: global registry used for listing and fallback selection.
+- `$HOME/.codex/skills/prd-fe-task/config/repos.json`: global registry used for listing and fallback selection.
 
 Because repository-local config contains machine-specific paths, `+config` must ensure `<repo-root>/.gitignore` contains `.lark-fe-task/`.
 
@@ -62,13 +62,13 @@ When the user provides incomplete arguments:
 Recommended invocation:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "<repo-root>" "<fe-project-paths>" "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "<repo-root>" "<fe-project-paths>" "docs/frontend-tasks"
 ```
 
 Example only:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/config.sh" "$(pwd)" "apps/web,apps/admin" "docs/frontend-tasks"
+"$HOME/.codex/skills/prd-fe-task/scripts/config.sh" "$(pwd)" "apps/web,apps/admin" "docs/frontend-tasks"
 ```
 
 If the user has not configured the repository, ask for or infer these values before producing a task breakdown.
@@ -80,7 +80,7 @@ Use `+list` when the user asks which repositories are configured, for example `�
 Recommended invocation:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/list-configs.sh"
+"$HOME/.codex/skills/prd-fe-task/scripts/list-configs.sh"
 ```
 
 Do not scan the user's home directory to answer this. Read the global registry instead. If the registry does not exist or is empty, tell the user no repositories are configured yet and show the `+config` usage.
@@ -98,7 +98,7 @@ Accepted inputs:
 Recommended invocation:
 
 ```bash
-"$HOME/.codex/skills/lark-fe-task/scripts/plan-lark-doc.sh" "<document-title-or-url-or-token>" "<repo-root>"
+"$HOME/.codex/skills/prd-fe-task/scripts/plan-lark-doc.sh" "<document-title-or-url-or-token>" "<repo-root>"
 ```
 
 The helper command resolves config in this order, fetches the document Markdown with `lark-cli`, and prints the source content plus the configured FE project paths and target output path:

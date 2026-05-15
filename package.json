@@ -1,6 +1,6 @@
 {
   "name": "@renkosky/lark-fe-skills",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Codex skills for Lark-based frontend requirement planning workflows.",
   "type": "module",
   "bin": {

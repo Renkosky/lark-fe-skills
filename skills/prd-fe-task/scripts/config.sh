@@ -13,7 +13,7 @@ require_lark_cli() {
     cat >&2 <<'EOF'
 Error: lark-cli is required but was not found in PATH.
 
-Please install and configure Lark CLI before using lark-fe-task:
+Please install and configure Lark CLI before using prd-fe-task:
 
   npm install -g @larksuite/cli
   lark-cli config init
@@ -40,7 +40,7 @@ ensure_local_config_gitignore() {
       if [[ -s "$gitignore_file" ]]; then
         printf '\n'
       fi
-      printf '# lark-fe-task local config\n'
+      printf '# prd-fe-task local config\n'
       printf '%s\n' "$ignore_path"
     } >> "$gitignore_file"
   fi
@@ -110,7 +110,7 @@ ensure_local_config_gitignore "$REPO_ROOT"
 ' "$REGISTRY_FILE" "$REPO_ROOT" "$FE_PROJECT_PATHS" "$OUTPUT_DIR"
 
 cat <<EOF
-Configured lark-fe-task.
+Configured prd-fe-task.
 CONFIG_FILE=$CONFIG_FILE
 REGISTRY_FILE=$REGISTRY_FILE
 REPO_ROOT=$REPO_ROOT

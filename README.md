@@ -14,7 +14,7 @@ Lark/Feishu based Codex skills for frontend requirement planning.
 
 `@renkosky/lark-fe-skills` packages Codex skills for Lark-based frontend workflows.
 
-The first skill is `lark-fe-task`: read a Lark/Feishu requirement document, inspect configured frontend project paths, and generate a task breakdown Markdown file.
+The first skill is `prd-fe-task`: read a Lark/Feishu requirement document, inspect configured frontend project paths, and generate a task breakdown Markdown file.
 
 ## 🚀 Install
 
@@ -27,7 +27,7 @@ npm install -g @renkosky/lark-fe-skills
 2. Install the skill:
 
 ```bash
-lark-fe-skills install lark-fe-task
+lark-fe-skills install prd-fe-task
 ```
 
 3. Restart Codex or open a new Codex session.
@@ -35,14 +35,14 @@ lark-fe-skills install lark-fe-task
 PATH fallback:
 
 ```bash
-npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install lark-fe-task
+npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install prd-fe-task
 ```
 
 Use it in Codex:
 
 ```text
-[$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +config
-[$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +plan <Lark document title, URL, or token>
+[$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +config
+[$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +plan <Lark document title, URL, or token>
 ```
 
 ## 🧰 Prerequisites
@@ -62,20 +62,24 @@ Official lark-cli documentation: <https://github.com/larksuite/cli/tree/main>
 ```bash
 lark-fe-skills list
 lark-fe-skills path
-lark-fe-skills path lark-fe-task
-lark-fe-skills install lark-fe-task
+lark-fe-skills path prd-fe-task
+lark-fe-skills install prd-fe-task
+lark-fe-skills uninstall prd-fe-task
+lark-fe-skills uninstall lark-fe-task
 ```
 
 ## 📦 Packaged Skills
 
 | Skill | Description |
 | --- | --- |
-| `lark-fe-task` | Turn Lark/Feishu requirement documents into concrete frontend task breakdowns. |
+| `prd-fe-task` | Turn Lark/Feishu requirement documents into concrete frontend task breakdowns. |
 
 ## 📝 Notes
 
 - npm installation and Codex skill installation are separate steps.
 - This package installs skills to `~/.codex/skills`.
+- Use `lark-fe-skills uninstall prd-fe-task` to reset local Codex skill installation for first-run testing.
+- Use `lark-fe-skills uninstall lark-fe-task` to remove the legacy install directory.
 - Existing Lark skills may live under `~/.agents/skills`; that is a different source.
 
 ## 🗺️ Roadmap
@@ -116,7 +120,7 @@ lark-fe-skills install lark-fe-task
 
 `@renkosky/lark-fe-skills` 用于分发基于 Lark/飞书的前端需求工作流 Codex skills。
 
-首个 skill 是 `lark-fe-task`：读取 Lark/飞书需求文档，轻量检查已配置的前端项目路径，并生成前端任务拆分 Markdown。
+首个 skill 是 `prd-fe-task`：读取 Lark/飞书需求文档，轻量检查已配置的前端项目路径，并生成前端任务拆分 Markdown。
 
 ## 🚀 安装
 
@@ -129,7 +133,7 @@ npm install -g @renkosky/lark-fe-skills
 2. 安装 skill：
 
 ```bash
-lark-fe-skills install lark-fe-task
+lark-fe-skills install prd-fe-task
 ```
 
 3. 重启 Codex 或新开一个 Codex 会话。
@@ -137,14 +141,14 @@ lark-fe-skills install lark-fe-task
 PATH fallback：
 
 ```bash
-npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install lark-fe-task
+npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install prd-fe-task
 ```
 
 在 Codex 中使用：
 
 ```text
-[$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +config
-[$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +plan <飞书文档标题、链接或 token>
+[$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +config
+[$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +plan <飞书文档标题、链接或 token>
 ```
 
 ## 🧰 前置条件
@@ -164,20 +168,24 @@ lark-cli auth login --recommend
 ```bash
 lark-fe-skills list
 lark-fe-skills path
-lark-fe-skills path lark-fe-task
-lark-fe-skills install lark-fe-task
+lark-fe-skills path prd-fe-task
+lark-fe-skills install prd-fe-task
+lark-fe-skills uninstall prd-fe-task
+lark-fe-skills uninstall lark-fe-task
 ```
 
 ## 📦 已包含 Skills
 
 | Skill | 说明 |
 | --- | --- |
-| `lark-fe-task` | 将 Lark/飞书需求文档拆解成可开发的前端任务。 |
+| `prd-fe-task` | 将 Lark/飞书需求文档拆解成可开发的前端任务。 |
 
 ## 📝 说明
 
 - npm 包安装和 Codex skill 安装是两步。
 - 本包默认安装到 `~/.codex/skills`。
+- 可以用 `lark-fe-skills uninstall prd-fe-task` 清理本地 Codex skill，方便测试首次安装流程。
+- 可以用 `lark-fe-skills uninstall lark-fe-task` 清理旧版安装目录。
 - 已有 Lark skills 可能位于 `~/.agents/skills`，这是另一类来源。
 
 ## 🗺️ 开发规划

@@ -6,7 +6,7 @@ REGISTRY_FILE="$SKILL_DIR/config/repos.json"
 
 if [[ ! -f "$REGISTRY_FILE" || ! -s "$REGISTRY_FILE" ]]; then
   cat <<'EOF'
-No lark-fe-task repositories are configured yet.
+No prd-fe-task repositories are configured yet.
 
 Use:
   +config <repo-root> <fe-project-paths> [output-dir]
@@ -20,14 +20,14 @@ fi
   repos = data["repos"] || []
 
   if repos.empty?
-    puts "No lark-fe-task repositories are configured yet."
+    puts "No prd-fe-task repositories are configured yet."
     puts
     puts "Use:"
     puts "  +config <repo-root> <fe-project-paths> [output-dir]"
     exit 0
   end
 
-  puts "Configured lark-fe-task repositories:"
+  puts "Configured prd-fe-task repositories:"
   repos.each_with_index do |repo, index|
     fe_paths = Array(repo["feProjectPaths"]).join(",")
     puts

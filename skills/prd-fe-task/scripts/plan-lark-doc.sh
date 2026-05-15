@@ -16,7 +16,7 @@ require_lark_cli() {
     cat >&2 <<'EOF'
 Error: lark-cli is required but was not found in PATH.
 
-Please install and configure Lark CLI before using lark-fe-task:
+Please install and configure Lark CLI before using prd-fe-task:
 
   npm install -g @larksuite/cli
   lark-cli config init
@@ -72,7 +72,7 @@ load_registry_config() {
       puts "CONFIG_STATUS=registry"
       puts "CONFIG_SOURCE=#{Shellwords.escape(ARGV[0])}"
     else
-      warn "Multiple lark-fe-task repositories are configured. Choose one and rerun +plan with its repo root:"
+      warn "Multiple prd-fe-task repositories are configured. Choose one and rerun +plan with its repo root:"
       repos.each_with_index do |repo, index|
         warn "#{index + 1}. #{repo["repoRoot"]} | FE_PROJECT_PATHS=#{Array(repo["feProjectPaths"]).join(",")} | OUTPUT_DIR=#{repo["outputDir"]}"
       end
@@ -136,7 +136,7 @@ slugify() {
     puts slug
   ')"
   if [[ -z "$slug" ]]; then
-    slug="lark-fe-task"
+    slug="prd-fe-task"
   fi
   printf '%s' "$slug"
 }
@@ -164,7 +164,7 @@ ensure_output_gitignore() {
       if [[ -s "$gitignore_file" ]]; then
         printf '\n'
       fi
-      printf '# lark-fe-task generated task breakdowns\n'
+      printf '# prd-fe-task generated task breakdowns\n'
       printf '%s\n' "$ignore_path"
     } >> "$gitignore_file"
   fi
