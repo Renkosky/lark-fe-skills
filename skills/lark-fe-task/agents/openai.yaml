@@ -1,0 +1,4 @@
+interface:
+  display_name: "Lark FE Task"
+  short_description: "Break Lark requirement docs into frontend task Markdown."
+  default_prompt: "根据我提供的飞书文档名称、链接或 token，读取需求并生成前端可开发任务拆分 Markdown。"

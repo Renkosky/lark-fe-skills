@@ -1,0 +1,37 @@
+{
+  "name": "@renkosky/lark-fe-skills",
+  "version": "0.1.0",
+  "description": "Codex skills for Lark-based frontend requirement planning workflows.",
+  "type": "module",
+  "bin": {
+    "lark-fe-skills": "./bin/lark-fe-skills.js"
+  },
+  "files": [
+    "bin",
+    "skills",
+    "README.md",
+    "LICENSE"
+  ],
+  "scripts": {
+    "check": "node ./bin/lark-fe-skills.js list",
+    "pack:dry": "npm pack --dry-run"
+  },
+  "keywords": [
+    "codex",
+    "skills",
+    "lark",
+    "feishu",
+    "frontend",
+    "prd"
+  ],
+  "author": "Renkosky",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com:Renkosky/lark-fe-skills.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Renkosky/lark-fe-skills/issues"
+  },
+  "homepage": "https://github.com/Renkosky/lark-fe-skills#readme"
+}

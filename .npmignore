@@ -1,0 +1,6 @@
+.git/
+.github/
+.tmp/
+*.tgz
+npm-debug.log*
+.DS_Store
