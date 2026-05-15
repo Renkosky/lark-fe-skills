@@ -1,55 +1,53 @@
 # Lark FE Skills
 
+[![npm version](https://img.shields.io/npm/v/@renkosky/lark-fe-skills.svg)](https://www.npmjs.com/package/@renkosky/lark-fe-skills) [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](./LICENSE) [![Codex Skills](https://img.shields.io/badge/Codex-Skills-111827.svg)](https://github.com/openai/codex) [![Lark CLI](https://img.shields.io/badge/Lark-CLI-00A6FF.svg)](https://github.com/larksuite/cli/tree/main)
+
 English | [中文](#中文)
+
+Lark/Feishu based Codex skills for frontend requirement planning.
+
+[Install](#install) · [Prerequisites](#prerequisites) · [CLI](#cli) · [Roadmap](#roadmap) · [中文](#中文)
 
 ## English
 
-`@renkosky/lark-fe-skills` packages Codex skills for Lark-based frontend requirement workflows.
+## ✨ What is this?
 
-The first packaged skill is `lark-fe-task`, which reads a Lark/Feishu requirement document and generates a frontend task breakdown Markdown file.
+`@renkosky/lark-fe-skills` packages Codex skills for Lark-based frontend workflows.
 
-### Install
+The first skill is `lark-fe-task`: read a Lark/Feishu requirement document, inspect configured frontend project paths, and generate a task breakdown Markdown file.
 
-Installing the npm package only installs the distribution CLI. It does not automatically register a Codex skill. Run the install command afterwards to copy the skill into your Codex skills directory.
+## 🚀 Install
 
-1. Install the npm package:
+1. Install the package:
 
 ```bash
 npm install -g @renkosky/lark-fe-skills
 ```
 
-2. Install the packaged skill into Codex:
+2. Install the skill:
 
 ```bash
 lark-fe-skills install lark-fe-task
 ```
 
-This copies the skill to:
+3. Restart Codex or open a new Codex session.
 
-```text
-~/.codex/skills/lark-fe-task
-```
-
-3. Restart Codex or open a new Codex session if the skill does not appear immediately.
-
-If the `lark-fe-skills` command is not in your `PATH`, use npm exec:
+PATH fallback:
 
 ```bash
 npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install lark-fe-task
 ```
 
-Note: existing Lark-related skills may live under `~/.agents/skills`. This package installs to `~/.codex/skills` by default; they are different skill sources.
-
-Then use the installed skill from Codex:
+Use it in Codex:
 
 ```text
 [$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +config
 [$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +plan <Lark document title, URL, or token>
 ```
 
-### Prerequisites
+## 🧰 Prerequisites
 
-Install and configure `lark-cli` before using the skill:
+Install and configure `lark-cli` first:
 
 ```bash
 npm install -g @larksuite/cli
@@ -59,7 +57,7 @@ lark-cli auth login --recommend
 
 Official lark-cli documentation: <https://github.com/larksuite/cli/tree/main>
 
-### CLI
+## 🖥️ CLI
 
 ```bash
 lark-fe-skills list
@@ -68,11 +66,19 @@ lark-fe-skills path lark-fe-task
 lark-fe-skills install lark-fe-task
 ```
 
-### Packaged Skills
+## 📦 Packaged Skills
 
-- `lark-fe-task`: turn Lark/Feishu requirement documents into concrete frontend task breakdowns.
+| Skill | Description |
+| --- | --- |
+| `lark-fe-task` | Turn Lark/Feishu requirement documents into concrete frontend task breakdowns. |
 
-### Roadmap
+## 📝 Notes
+
+- npm installation and Codex skill installation are separate steps.
+- This package installs skills to `~/.codex/skills`.
+- Existing Lark skills may live under `~/.agents/skills`; that is a different source.
+
+## 🗺️ Roadmap
 
 - [x] Phase 1: Generate frontend task breakdown Markdown from Lark requirement documents.
   - [x] Configure repository root, frontend project paths, and output directory.
@@ -104,13 +110,15 @@ lark-fe-skills install lark-fe-task
 
 ## 中文
 
+[安装](#安装) · [前置条件](#前置条件) · [CLI](#cli-1) · [开发规划](#开发规划) · [English](#english)
+
+## ✨ 这是什么？
+
 `@renkosky/lark-fe-skills` 用于分发基于 Lark/飞书的前端需求工作流 Codex skills。
 
-首个发布的 skill 是 `lark-fe-task`，用于读取 Lark/飞书需求文档，并生成前端任务拆分 Markdown。
+首个 skill 是 `lark-fe-task`：读取 Lark/飞书需求文档，轻量检查已配置的前端项目路径，并生成前端任务拆分 Markdown。
 
-### 安装
-
-安装 npm 包只会安装分发用的 CLI，不会自动注册 Codex skill。安装 npm 包后，还需要执行 install 命令把 skill 复制到 Codex skills 目录。
+## 🚀 安装
 
 1. 安装 npm 包：
 
@@ -118,38 +126,30 @@ lark-fe-skills install lark-fe-task
 npm install -g @renkosky/lark-fe-skills
 ```
 
-2. 将包内 skill 安装到 Codex：
+2. 安装 skill：
 
 ```bash
 lark-fe-skills install lark-fe-task
 ```
 
-这个命令会把 skill 复制到：
+3. 重启 Codex 或新开一个 Codex 会话。
 
-```text
-~/.codex/skills/lark-fe-task
-```
-
-3. 如果 Codex 里没有立刻出现这个 skill，请重启 Codex 或新开一个 Codex 会话。
-
-如果 `lark-fe-skills` 命令不在 `PATH` 中，可以使用 npm exec：
+PATH fallback：
 
 ```bash
 npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install lark-fe-task
 ```
 
-注意：已有的 Lark 相关 skills 可能位于 `~/.agents/skills`。本包默认安装到 `~/.codex/skills`，这是两个不同来源。
-
-然后在 Codex 中使用已安装的 skill：
+在 Codex 中使用：
 
 ```text
 [$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +config
 [$lark-fe-task](~/.codex/skills/lark-fe-task/SKILL.md) +plan <飞书文档标题、链接或 token>
 ```
 
-### 前置条件
+## 🧰 前置条件
 
-使用 skill 前，需要先安装并配置 `lark-cli`：
+先安装并配置 `lark-cli`：
 
 ```bash
 npm install -g @larksuite/cli
@@ -159,7 +159,7 @@ lark-cli auth login --recommend
 
 官方 lark-cli 文档：<https://github.com/larksuite/cli/tree/main>
 
-### CLI
+## 🖥️ CLI
 
 ```bash
 lark-fe-skills list
@@ -168,11 +168,19 @@ lark-fe-skills path lark-fe-task
 lark-fe-skills install lark-fe-task
 ```
 
-### 已包含 Skills
+## 📦 已包含 Skills
 
-- `lark-fe-task`：将 Lark/飞书需求文档拆解成可开发的前端任务。
+| Skill | 说明 |
+| --- | --- |
+| `lark-fe-task` | 将 Lark/飞书需求文档拆解成可开发的前端任务。 |
 
-### 开发规划
+## 📝 说明
+
+- npm 包安装和 Codex skill 安装是两步。
+- 本包默认安装到 `~/.codex/skills`。
+- 已有 Lark skills 可能位于 `~/.agents/skills`，这是另一类来源。
+
+## 🗺️ 开发规划
 
 - [x] Phase 1：根据 Lark 需求文档生成前端任务拆分 Markdown。
   - [x] 配置仓库根目录、前端项目路径和输出目录。
