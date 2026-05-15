@@ -10,10 +10,35 @@ The first packaged skill is `lark-fe-task`, which reads a Lark/Feishu requiremen
 
 ### Install
 
+Installing the npm package only installs the distribution CLI. It does not automatically register a Codex skill. Run the install command afterwards to copy the skill into your Codex skills directory.
+
+1. Install the npm package:
+
 ```bash
 npm install -g @renkosky/lark-fe-skills
+```
+
+2. Install the packaged skill into Codex:
+
+```bash
 lark-fe-skills install lark-fe-task
 ```
+
+This copies the skill to:
+
+```text
+~/.codex/skills/lark-fe-task
+```
+
+3. Restart Codex or open a new Codex session if the skill does not appear immediately.
+
+If the `lark-fe-skills` command is not in your `PATH`, use npm exec:
+
+```bash
+npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install lark-fe-task
+```
+
+Note: existing Lark-related skills may live under `~/.agents/skills`. This package installs to `~/.codex/skills` by default; they are different skill sources.
 
 Then use the installed skill from Codex:
 
@@ -85,10 +110,35 @@ lark-fe-skills install lark-fe-task
 
 ### 安装
 
+安装 npm 包只会安装分发用的 CLI，不会自动注册 Codex skill。安装 npm 包后，还需要执行 install 命令把 skill 复制到 Codex skills 目录。
+
+1. 安装 npm 包：
+
 ```bash
 npm install -g @renkosky/lark-fe-skills
+```
+
+2. 将包内 skill 安装到 Codex：
+
+```bash
 lark-fe-skills install lark-fe-task
 ```
+
+这个命令会把 skill 复制到：
+
+```text
+~/.codex/skills/lark-fe-task
+```
+
+3. 如果 Codex 里没有立刻出现这个 skill，请重启 Codex 或新开一个 Codex 会话。
+
+如果 `lark-fe-skills` 命令不在 `PATH` 中，可以使用 npm exec：
+
+```bash
+npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install lark-fe-task
+```
+
+注意：已有的 Lark 相关 skills 可能位于 `~/.agents/skills`。本包默认安装到 `~/.codex/skills`，这是两个不同来源。
 
 然后在 Codex 中使用已安装的 skill：
 
