@@ -4,7 +4,7 @@
   "description": "Codex skills for Lark-based frontend requirement planning workflows.",
   "type": "module",
   "bin": {
-    "lark-fe-skills": "./bin/lark-fe-skills.js"
+    "lark-fe-skills": "bin/lark-fe-skills.js"
   },
   "files": [
     "bin",
@@ -28,7 +28,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com:Renkosky/lark-fe-skills.git"
+    "url": "git+ssh://git@github.com/Renkosky/lark-fe-skills.git"
   },
   "bugs": {
     "url": "https://github.com/Renkosky/lark-fe-skills/issues"
