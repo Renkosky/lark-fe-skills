@@ -570,9 +570,31 @@ function fieldMappingRows(profile, mappedFields, rows) {
     })
 }
 
-function printPreview(context) {
+function previewHeaders(context) {
+  const fields = context.profile.fields || {}
+  const headers = ['#', 'recordKey', 'mode', 'title']
+  if (fields.status) headers.push('status')
+  if (fields.type) headers.push('type')
+  if (fields.requirementId) headers.push('requirementId')
+  if (fields.assignee) headers.push('assignee')
+  if (fields.description) headers.push('description')
+  return headers
+}
+
+function previewRowValues(headers, row, index) {
+  return headers.map((header) => {
+    if (header === '#') return index + 1
+    if (header === 'recordKey') return row.recordKey
+    if (header === 'mode') return row.recordMode
+    if (header === 'assignee') return row.assigneeLabel
+    return row[header]
+  })
+}
+
+function renderFullPreview(context, previewFile) {
   const createCommand = `+create ${context.taskFile}`
-  console.log(`# PRD FE Schedule Dry-Run
+  const out = []
+  out.push(`# PRD FE Schedule Dry-Run
 
 ## Source
 
@@ -580,6 +602,7 @@ function printPreview(context) {
 - Parsed tasks: ${context.tasks.length}
 - Profile: ${context.profilePath}
 - Preview records: ${context.rows.length}
+${previewFile ? `- Full preview file: ${previewFile}\n` : ''}
 
 ## Target
 
@@ -591,43 +614,30 @@ function printPreview(context) {
 | Key | Mode | Type | Title Template |
 | --- | --- | --- | --- |`)
   for (const record of context.profile.records) {
-    console.log(`| ${cell(record.key)} | ${cell(record.mode)} | ${cell(record.type)} | ${cell(record.title)} |`)
+    out.push(`| ${cell(record.key)} | ${cell(record.mode)} | ${cell(record.type)} | ${cell(record.title)} |`)
   }
-  console.log(`
+  out.push(`
 ## Field Mapping
 
 | Logical Field | Matched Base Field | Source | Example Value |
 | --- | --- | --- | --- |`)
   for (const [logical, matched, source, value] of fieldMappingRows(context.profile, context.mappedFields, context.rows)) {
-    console.log(`| ${cell(logical)} | ${cell(matched)} | ${cell(source)} | ${cell(value)} |`)
+    out.push(`| ${cell(logical)} | ${cell(matched)} | ${cell(source)} | ${cell(value)} |`)
   }
-  console.log(`
+  out.push(`
 ## Record Preview`)
-  const fields = context.profile.fields || {}
-  const headers = ['#', 'recordKey', 'mode', 'title']
-  if (fields.status) headers.push('status')
-  if (fields.type) headers.push('type')
-  if (fields.requirementId) headers.push('requirementId')
-  if (fields.assignee) headers.push('assignee')
-  if (fields.description) headers.push('description')
-  console.log(`| ${headers.join(' | ')} |`)
-  console.log(`| ${headers.map(() => '---').join(' | ')} |`)
+  const headers = previewHeaders(context)
+  out.push(`| ${headers.join(' | ')} |`)
+  out.push(`| ${headers.map(() => '---').join(' | ')} |`)
   context.rows.forEach((row, index) => {
-    const values = headers.map((header) => {
-      if (header === '#') return index + 1
-      if (header === 'recordKey') return row.recordKey
-      if (header === 'mode') return row.recordMode
-      if (header === 'assignee') return row.assigneeLabel
-      return row[header]
-    })
-    console.log(`| ${values.map(cell).join(' | ')} |`)
+    out.push(`| ${previewRowValues(headers, row, index).map(cell).join(' | ')} |`)
   })
-  console.log(`
+  out.push(`
 ## Pending Questions
 `)
-  if (context.pending.length === 0) console.log('- None.')
-  else [...new Set(context.pending)].forEach((item) => console.log(`- ${item}`))
-  console.log(`
+  if (context.pending.length === 0) out.push('- None.')
+  else [...new Set(context.pending)].forEach((item) => out.push(`- ${item}`))
+  out.push(`
 ## Safety
 
 Dry-run only. No Lark Base records were created or updated.
@@ -639,6 +649,83 @@ Review the field mapping, record rules, and preview rows above.
 - If the task type layout is not right, run \`+config-types\` with the desired rules, then run dry-run again.
 - If everything looks right and the user explicitly confirms, run \`${createCommand}\`.
 - Do not create records without explicit confirmation.`)
+  return out.join('\n')
+}
+
+function writePreviewFile(context) {
+  const fileName = `prd-fe-schedule-preview-${Date.now()}.md`
+  const previewFile = join(tmpdir(), fileName)
+  writeFileSync(previewFile, renderFullPreview(context, previewFile))
+  return previewFile
+}
+
+function recordSummary(row, index) {
+  const parts = [`${index + 1}. ${row.title || '(untitled)'}`]
+  if (row.type) parts.push(`type=${row.type}`)
+  if (row.status) parts.push(`status=${row.status}`)
+  if (row.assigneeLabel) parts.push(`assignee=${row.assigneeLabel}`)
+  return parts.join(' | ')
+}
+
+function printCompactPreview(context, previewFile, options = {}) {
+  const createCommand = `+create ${context.taskFile}`
+  const typeValues = [...new Set(context.rows.map((row) => row.type).filter(Boolean))]
+  const mapped = Object.entries(context.profile.fields || {})
+    .filter(([logical]) => context.mappedFields[logical])
+    .map(([logical, actual]) => `${logical}=${actual}`)
+  const pending = [...new Set(context.pending)]
+  console.log(`# PRD FE Schedule Dry-Run Summary
+
+## Source
+
+- Task Markdown: ${context.taskFile}
+- Parsed tasks: ${context.tasks.length}
+- Profile: ${context.profilePath}
+- Preview records: ${context.rows.length}
+- Full preview file: ${previewFile}
+
+## Target
+
+- Base: ${context.baseToken}
+- Table: ${context.tableName} (${context.tableId})
+
+## Summary
+
+- Record rules: ${context.profile.records.map((record) => `${record.key}:${record.mode}${record.type ? `/${record.type}` : ''}`).join(', ')}
+- Mapped fields: ${mapped.length ? mapped.join(', ') : '(none)'}
+- Task types: ${typeValues.length ? typeValues.join(', ') : '(none)'}
+- Assignee: ${context.rows.find((row) => row.assigneeLabel)?.assigneeLabel || '(none)'}
+- Pending questions: ${pending.length}
+`)
+
+  const sampleLimit = options.verbose ? Math.min(2, context.rows.length) : 1
+  console.log('## Record Samples')
+  context.rows.slice(0, sampleLimit).forEach((row, index) => console.log(`- ${recordSummary(row, index)}`))
+  if (context.rows.length > sampleLimit) console.log(`- ... ${context.rows.length - sampleLimit} more records hidden. Use --full to print all rows.`)
+
+  console.log('\n## Pending Questions')
+  if (pending.length === 0) console.log('- None.')
+  else pending.forEach((item) => console.log(`- ${item}`))
+
+  console.log(`
+## Safety
+
+Dry-run only. No Lark Base records were created or updated.
+
+## Next Step
+
+Review the summary above. Open the full preview file when you need every field and row.
+
+- If the task type layout is not right, run \`+config-types\` with the desired rules, then run dry-run again.
+- If everything looks right and the user explicitly confirms, run \`${createCommand}\`.
+- Use \`--full\` only when you need to print the entire preview in the conversation.
+- Do not create records without explicit confirmation.`)
+}
+
+function printPreview(context, options = {}) {
+  const previewFile = writePreviewFile(context)
+  if (options.full) console.log(renderFullPreview(context, previewFile))
+  else printCompactPreview(context, previewFile, options)
 }
 
 function buildContext(taskInput, profilePath) {
@@ -745,7 +832,7 @@ function commandConfigSchedule() {
 }
 
 function parseRunArgs(args) {
-  const options = { profile: defaultProfile, yes: false }
+  const options = { profile: defaultProfile, yes: false, full: false, verbose: false }
   const positional = []
   for (let index = 0; index < args.length; index += 1) {
     if (args[index] === '--profile') {
@@ -753,6 +840,10 @@ function parseRunArgs(args) {
       index += 1
     } else if (args[index] === '--yes') {
       options.yes = true
+    } else if (args[index] === '--full') {
+      options.full = true
+    } else if (args[index] === '--verbose') {
+      options.verbose = true
     } else {
       positional.push(args[index])
     }
@@ -781,10 +872,10 @@ function commandDryRun() {
     writeProfile(tmp, profile, availableTypeOptions)
     options.profile = tmp
   }
-  if (!taskInput) die('Usage: dry-run-schedule.sh [--profile <profile.yaml>] <task-md-path-or-name>', 2)
+  if (!taskInput) die('Usage: dry-run-schedule.sh [--profile <profile.yaml>] [--verbose] [--full] <task-md-path-or-name>', 2)
   if (!existsSync(options.profile)) die(`Profile not found: ${options.profile}. Run +config-schedule first or pass --profile <path>.`)
   requireLarkCli()
-  printPreview(buildContext(taskInput, options.profile))
+  printPreview(buildContext(taskInput, options.profile), options)
 }
 
 function parseTypeArgs(args) {

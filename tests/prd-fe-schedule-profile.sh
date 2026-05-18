@@ -84,6 +84,7 @@ DEFAULT_OUTPUT="$(
 grep -Fq "Preview records: 2" <<<"$DEFAULT_OUTPUT"
 grep -Fq "Demo User (ou_demo)" <<<"$DEFAULT_OUTPUT"
 grep -Fq "## Next Step" <<<"$DEFAULT_OUTPUT"
+grep -Fq "Full preview file:" <<<"$DEFAULT_OUTPUT"
 grep -Fq "Do not create records without explicit confirmation." <<<"$DEFAULT_OUTPUT"
 if grep -Fq "这部分不应进入最后一个 task 的描述" <<<"$DEFAULT_OUTPUT"; then
   echo "Parent sections should not be included in the final task description" >&2
@@ -103,7 +104,15 @@ MULTI_OUTPUT="$(
 )"
 
 grep -Fq "Preview records: 5" <<<"$MULTI_OUTPUT"
-grep -Fq "| qa | once | QA" <<<"$MULTI_OUTPUT"
+grep -Fq "more records hidden. Use --full to print all rows." <<<"$MULTI_OUTPUT"
+
+MULTI_FULL_OUTPUT="$(
+  PRD_FE_SCHEDULE_TABLES_JSON="$TABLES_JSON" \
+  PRD_FE_SCHEDULE_FIELDS_JSON="$FIELDS_MULTI_JSON" \
+  PRD_FE_SCHEDULE_AUTH_JSON="$AUTH_JSON" \
+  "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --full --profile "$PROFILE_MULTI" "$TASK_MD"
+)"
+grep -Fq "| qa | once | QA" <<<"$MULTI_FULL_OUTPUT"
 
 cat >"$PROFILE_SIMPLE" <<'YAML'
 name: simple
@@ -204,7 +213,7 @@ grep -Fq "type: Release" "$PROFILE_GENERIC_UPDATED"
 GENERIC_OUTPUT="$(
   PRD_FE_SCHEDULE_TABLES_JSON="$TABLES_JSON" \
   PRD_FE_SCHEDULE_FIELDS_JSON="$FIELDS_GENERIC_JSON" \
-  "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_GENERIC_UPDATED" "$TASK_MD"
+  "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --full --profile "$PROFILE_GENERIC_UPDATED" "$TASK_MD"
 )"
 
 grep -Fq "Preview records: 4" <<<"$GENERIC_OUTPUT"

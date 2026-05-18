@@ -50,8 +50,10 @@ View or update task classification rules:
 Preview records:
 
 ```text
-[$prd-fe-schedule](path/to/SKILL.md) +dry-run [--profile <profile.yaml>] <task-md-path-or-name>
+[$prd-fe-schedule](path/to/SKILL.md) +dry-run [--profile <profile.yaml>] [--verbose] [--full] <task-md-path-or-name>
 ```
+
+By default, dry-run prints a compact summary and writes the complete preview to a local temp Markdown file. Use `--full` only when you need every row printed in the conversation.
 
 Create records after preview and confirmation:
 
@@ -66,7 +68,7 @@ Underlying helpers:
 ```bash
 "$HOME/.codex/skills/prd-fe-schedule/scripts/config-schedule.sh" "<base-url-or-title>" "[table-id-or-name]" "[profile-path]"
 "$HOME/.codex/skills/prd-fe-schedule/scripts/config-types.sh" "[--profile <profile.yaml>]" "[<type-option>:perTask]" "[<type-option>:once]"
-"$HOME/.codex/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" "[--profile <profile.yaml>]" "<task-md-path-or-name>"
+"$HOME/.codex/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" "[--profile <profile.yaml>]" "[--verbose]" "[--full]" "<task-md-path-or-name>"
 "$HOME/.codex/skills/prd-fe-schedule/scripts/create-schedule.sh" --yes "[--profile <profile.yaml>]" "<task-md-path-or-name>"
 ```
 
@@ -79,16 +81,19 @@ Underlying helpers:
 
 ## Output
 
-The dry-run preview includes:
+The compact dry-run preview includes:
 
 - task Markdown source
 - target Base and table
 - active profile
-- record rule preview
-- field mapping table
-- preview rows generated from profile rules
+- parsed task count and preview record count
+- mapped fields summary
+- one record sample by default, or two with `--verbose`
+- full preview file path
 - unmapped fields and pending questions
 - a safety note that no Lark data was modified
+
+The full preview file and `--full` output include record rules, the field mapping table, and all preview rows generated from profile rules.
 
 ## Safety
 
@@ -146,8 +151,10 @@ profile 阶段会展示识别到的字段和可用任务类型。创建记录前
 预览记录：
 
 ```text
-[$prd-fe-schedule](path/to/SKILL.md) +dry-run [--profile <profile.yaml>] <任务Markdown路径或名称>
+[$prd-fe-schedule](path/to/SKILL.md) +dry-run [--profile <profile.yaml>] [--verbose] [--full] <任务Markdown路径或名称>
 ```
+
+默认 dry-run 只在对话里输出精简摘要，并把完整预览写入本地临时 Markdown 文件。只有需要把每一行都打印到对话里时，再使用 `--full`。
 
 预览确认后创建记录：
 
@@ -162,7 +169,7 @@ profile 阶段会展示识别到的字段和可用任务类型。创建记录前
 ```bash
 "$HOME/.codex/skills/prd-fe-schedule/scripts/config-schedule.sh" "<Base链接或名称>" "[表ID或表名]" "[profile路径]"
 "$HOME/.codex/skills/prd-fe-schedule/scripts/config-types.sh" "[--profile <profile.yaml>]" "[<类型选项>:perTask]" "[<类型选项>:once]"
-"$HOME/.codex/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" "[--profile <profile.yaml>]" "<任务Markdown路径或名称>"
+"$HOME/.codex/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" "[--profile <profile.yaml>]" "[--verbose]" "[--full]" "<任务Markdown路径或名称>"
 "$HOME/.codex/skills/prd-fe-schedule/scripts/create-schedule.sh" --yes "[--profile <profile.yaml>]" "<任务Markdown路径或名称>"
 ```
 
@@ -175,16 +182,19 @@ profile 阶段会展示识别到的字段和可用任务类型。创建记录前
 
 ## 输出
 
-dry-run 预览包含：
+精简 dry-run 预览包含：
 
 - 任务 Markdown 来源
 - 目标 Base 和数据表
 - 当前 profile
-- 记录生成规则预览
-- 字段映射表
-- 按 profile 规则生成的预览记录
+- 解析到的任务数量和预览记录数量
+- 字段映射摘要
+- 默认 1 条记录样例，`--verbose` 输出 2 条
+- 完整预览文件路径
 - 未映射字段和待确认问题
 - 未修改 Lark 数据的安全提示
+
+完整预览文件和 `--full` 输出包含记录生成规则、字段映射表，以及按 profile 规则生成的所有预览记录。
 
 ## 安全规则
 

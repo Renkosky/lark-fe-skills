@@ -102,6 +102,7 @@ lark-fe-skills uninstall lark-fe-task
   - [x] Configure and remember task classification rules with `+config-types`.
   - [x] Read custom task status/type options from the Base instead of inventing tags.
   - [x] Support dry-run previews from a profile without modifying Lark.
+  - [x] Reduce token usage by printing compact dry-run summaries and writing full previews to local temp files.
   - [x] Add an explicit `+create` helper that requires confirmation/`--yes` before writing records.
 - [ ] Phase 3: Implement frontend tasks from generated Markdown.
   - [ ] Default to implementing one task at a time to keep human review small and manageable.
@@ -215,6 +216,7 @@ lark-fe-skills uninstall lark-fe-task
   - [x] 支持通过 `+config-types` 配置并记住任务分类规则。
   - [x] 从 Base 读取自定义任务状态/类型选项，不臆造 tag。
   - [x] 支持基于 profile 的 dry-run 预览，不修改 Lark。
+  - [x] 默认输出精简 dry-run 摘要，并把完整预览写入本地临时文件，降低 token 消耗。
   - [x] 新增显式 `+create` helper，要求确认/`--yes` 后才写入记录。
 - [ ] Phase 3：根据已生成的 Markdown 实际开发前端任务。
   - [ ] 默认一次只实现一个 Task，控制代码改动粒度，方便人工 review。

@@ -42,7 +42,7 @@ When the user says something like "schedule these tasks", "帮我按照刚刚拆
    - which Base type options should be `once`
    - whether any type should be omitted
 4. Save the answer with `+config-types`.
-5. Run `+dry-run` and show the preview.
+5. Run `+dry-run` and show the compact preview summary.
 6. Ask whether to execute scheduling with the current settings.
 7. Only run `+create` after the user explicitly confirms.
 
@@ -107,7 +107,7 @@ Use `+dry-run` when the user wants to preview Lark Base schedule records from a 
 Accepted Codex invocation:
 
 ```text
-+dry-run [--profile <profile.yaml>] <task-md-path-or-name>
++dry-run [--profile <profile.yaml>] [--verbose] [--full] <task-md-path-or-name>
 ```
 
 Examples:
@@ -115,13 +115,16 @@ Examples:
 ```text
 +dry-run docs/frontend-tasks/2026-05-18-pr-00000.md
 +dry-run --profile ./schedule-profile.yaml pr-00000
++dry-run --full --profile ./schedule-profile.yaml pr-00000
 ```
 
 Recommended invocation:
 
 ```bash
-"$HOME/.codex/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" "[--profile <profile.yaml>]" "<task-md-path-or-name>"
+"$HOME/.codex/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" "[--profile <profile.yaml>]" "[--verbose]" "[--full]" "<task-md-path-or-name>"
 ```
+
+Default dry-run output is intentionally compact to reduce Codex token usage. It prints counts, key mappings, pending questions, one record sample, and a local full-preview file path. Use `--verbose` for two samples, or `--full` only when the full table must be printed in the conversation.
 
 ### +create
 
@@ -165,20 +168,25 @@ Recommended invocation:
    - If `fields.type` is removed from the profile, do not write task type values.
    - If `defaults.assignee` is `currentUser` and a writable assignee user field exists, default owner to the current `lark-cli` user.
    - Leave start time, completion time, and work days empty unless the profile/template explicitly provides values.
+   - Print compact output by default and write the complete Markdown preview to a local temp file.
    - Print unmapped or ambiguous fields under pending questions.
    - `+dry-run` must not call `record-batch-create`, `record-upsert`, or any Lark write command.
 
 ## Output Rules
 
-The dry-run output must include:
+The default dry-run output must include:
 
 - Task Markdown source.
 - Target Base token and table.
-- Field mapping table.
-- Record preview, one row per parsed frontend task.
-- Record-rule preview from the active profile.
+- Active profile path.
+- Parsed task count and preview record count.
+- Mapped fields summary.
+- One record sample by default, or two with `--verbose`.
+- Full preview file path.
 - Unmapped fields and pending questions.
 - A clear reminder that no Lark data was modified.
+
+The full preview file and `--full` output must include field mapping, record-rule preview, and every generated preview row.
 
 ## Safety
 
@@ -190,4 +198,4 @@ The dry-run output must include:
 ## TODO / Roadmap
 
 - Phase 2.1: keep improving profile editing and validation hints.
-- Phase 2.3: optionally export dry-run preview to a local Markdown or JSON file.
+- Phase 2.3: optionally add JSON preview export for integrations.
