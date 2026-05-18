@@ -26,16 +26,14 @@ Usage:
 Commands:
   list              List packaged skills.
   path              Print the package skills directory or one skill path.
-  install           Copy a packaged skill to $HOME/.codex/skills.
-  uninstall         Remove an installed skill from $HOME/.codex/skills.
+  install           Copy all packaged skills, or one named skill, to $HOME/.codex/skills.
+  uninstall         Remove all packaged skills, or one named skill, from $HOME/.codex/skills.
 
 Examples:
   lark-fe-skills list
   lark-fe-skills path prd-fe-task
-  lark-fe-skills path prd-fe-schedule
-  lark-fe-skills install prd-fe-task
-  lark-fe-skills install prd-fe-schedule
-  lark-fe-skills uninstall prd-fe-task
+  lark-fe-skills install
+  lark-fe-skills uninstall
   lark-fe-skills uninstall lark-fe-task`)
 }
 
@@ -63,7 +61,7 @@ function printPath(skillName) {
   console.log(skillsRoot)
 }
 
-function installSkill(skillName = 'prd-fe-task') {
+function installOneSkill(skillName) {
   assertSkillName(skillName)
 
   const source = join(skillsRoot, skillName)
@@ -96,7 +94,18 @@ function installSkill(skillName = 'prd-fe-task') {
   console.log(`Installed ${skillName} to ${target}`)
 }
 
-function uninstallSkill(skillName = 'prd-fe-task') {
+function installSkill(skillName) {
+  if (skillName) {
+    installOneSkill(skillName)
+    return
+  }
+
+  for (const packagedSkill of packagedSkills) {
+    installOneSkill(packagedSkill)
+  }
+}
+
+function uninstallOneSkill(skillName) {
   assertSkillName(skillName, uninstallableSkills)
 
   const target = join(homedir(), '.codex', 'skills', skillName)
@@ -108,6 +117,17 @@ function uninstallSkill(skillName = 'prd-fe-task') {
 
   rmSync(target, { recursive: true, force: true })
   console.log(`Uninstalled ${skillName} from ${target}`)
+}
+
+function uninstallSkill(skillName) {
+  if (skillName) {
+    uninstallOneSkill(skillName)
+    return
+  }
+
+  for (const packagedSkill of packagedSkills) {
+    uninstallOneSkill(packagedSkill)
+  }
 }
 
 const [command, skillName] = process.argv.slice(2)

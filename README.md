@@ -24,10 +24,10 @@ The first packaged workflow includes `prd-fe-task` for task breakdowns and `prd-
 npm install -g @renkosky/lark-fe-skills
 ```
 
-2. Install the skill:
+2. Install the Codex skills:
 
 ```bash
-lark-fe-skills install prd-fe-task
+lark-fe-skills install
 ```
 
 3. Restart Codex or open a new Codex session.
@@ -35,7 +35,7 @@ lark-fe-skills install prd-fe-task
 PATH fallback:
 
 ```bash
-npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install prd-fe-task
+npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install
 ```
 
 Use it in Codex:
@@ -63,12 +63,11 @@ Official lark-cli documentation: <https://github.com/larksuite/cli/tree/main>
 ```bash
 lark-fe-skills list
 lark-fe-skills path
-lark-fe-skills path prd-fe-task
-lark-fe-skills path prd-fe-schedule
-lark-fe-skills install prd-fe-task
-lark-fe-skills install prd-fe-schedule
-lark-fe-skills uninstall prd-fe-task
-lark-fe-skills uninstall prd-fe-schedule
+lark-fe-skills path <skill-name>
+lark-fe-skills install
+lark-fe-skills install <skill-name>
+lark-fe-skills uninstall
+lark-fe-skills uninstall <skill-name>
 lark-fe-skills uninstall lark-fe-task
 ```
 
@@ -83,7 +82,7 @@ lark-fe-skills uninstall lark-fe-task
 
 - npm installation and Codex skill installation are separate steps.
 - This package installs skills to `~/.codex/skills`.
-- Use `lark-fe-skills uninstall prd-fe-task` to reset local Codex skill installation for first-run testing.
+- Use `lark-fe-skills uninstall` to reset local Codex skill installation for first-run testing.
 - Use `lark-fe-skills uninstall lark-fe-task` to remove the legacy install directory.
 - Existing Lark skills may live under `~/.agents/skills`; that is a different source.
 
@@ -138,10 +137,10 @@ lark-fe-skills uninstall lark-fe-task
 npm install -g @renkosky/lark-fe-skills
 ```
 
-2. 安装 skill：
+2. 安装 Codex skills：
 
 ```bash
-lark-fe-skills install prd-fe-task
+lark-fe-skills install
 ```
 
 3. 重启 Codex 或新开一个 Codex 会话。
@@ -149,7 +148,7 @@ lark-fe-skills install prd-fe-task
 PATH fallback：
 
 ```bash
-npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install prd-fe-task
+npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install
 ```
 
 在 Codex 中使用：
@@ -177,12 +176,11 @@ lark-cli auth login --recommend
 ```bash
 lark-fe-skills list
 lark-fe-skills path
-lark-fe-skills path prd-fe-task
-lark-fe-skills path prd-fe-schedule
-lark-fe-skills install prd-fe-task
-lark-fe-skills install prd-fe-schedule
-lark-fe-skills uninstall prd-fe-task
-lark-fe-skills uninstall prd-fe-schedule
+lark-fe-skills path <skill-name>
+lark-fe-skills install
+lark-fe-skills install <skill-name>
+lark-fe-skills uninstall
+lark-fe-skills uninstall <skill-name>
 lark-fe-skills uninstall lark-fe-task
 ```
 
@@ -197,7 +195,7 @@ lark-fe-skills uninstall lark-fe-task
 
 - npm 包安装和 Codex skill 安装是两步。
 - 本包默认安装到 `~/.codex/skills`。
-- 可以用 `lark-fe-skills uninstall prd-fe-task` 清理本地 Codex skill，方便测试首次安装流程。
+- 可以用 `lark-fe-skills uninstall` 清理本地 Codex skills，方便测试首次安装流程。
 - 可以用 `lark-fe-skills uninstall lark-fe-task` 清理旧版安装目录。
 - 已有 Lark skills 可能位于 `~/.agents/skills`，这是另一类来源。
 
