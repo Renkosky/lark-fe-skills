@@ -7,7 +7,9 @@ Use this template for the generated Markdown file. Keep wording concise, but inc
 
 ## 文档信息
 
-- 来源: <document title / URL / token>
+- 来源: <actual fetched document title / URL / token>
+- 文档ID: <document_id when available>
+- 候选选择说明: <why this source was selected when resolved from title/search>
 - 生成日期: <YYYY-MM-DD>
 - 影响项目: <configured FE project path(s)>
 - 需求类型: <feature / optimization / bugfix / onboarding-reference / unknown>
@@ -15,6 +17,8 @@ Use this template for the generated Markdown file. Keep wording concise, but inc
 ## 需求概览
 
 <Summarize the user-visible or operator-visible requirement in 3-6 bullets. Include the main user flow and business goal.>
+
+If the document contains formulas, examples, or old/new formula comparisons, include the core calculation rules here instead of treating them as missing requirements.
 
 ## 影响范围
 
@@ -61,3 +65,5 @@ Only list affected FE project paths, modules, or pages. Do not include rows for 
 When the document is not a feature PRD, keep the same headings but mark `需求类型` as `onboarding-reference` or `unknown`, keep the task list short, and explicitly state that no implementation tasks should be invented from reference-only content.
 
 Ignore native App/mobile-only requirements unless they define shared browser FE behavior. The generated breakdown should only cover configured FE project paths.
+
+When the source document includes a `计算公式` section, sample calculation rows, or old/new formula comparisons, preserve the exact business meaning in the relevant task and acceptance criteria. Do not move explicit formulas into `待确认问题` unless the document itself is contradictory.

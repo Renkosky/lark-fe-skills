@@ -28,10 +28,12 @@ It reads a Lark document by title, URL, or token, extracts the requirement conte
 ### What It Does
 
 - Finds and reads Lark/Feishu requirement documents.
+- Prefers official PRD documents over same-title test-delivery, QA daily/weekly, or self-test documents.
 - Supports one frontend project or multiple frontend projects in a monorepo.
 - Treats browser-based public sites, admin consoles, and other web frontends as frontend projects when configured.
 - Ignores native App or mobile-only content unless it affects shared browser frontend behavior.
 - Splits requirements into actionable frontend tasks.
+- Preserves formulas, sample calculations, and old/new formula comparisons from the PRD.
 - Includes code-location clues, dependencies, acceptance checks, and open questions.
 - Writes the final task breakdown as a Markdown file.
 
@@ -51,9 +53,10 @@ Use prd-fe-task to split this Lark PRD into FE tasks: <Lark document URL>
 
 ### Prerequisites
 
-Install and configure `lark-cli` before using this skill:
+Install Node.js and configure `lark-cli` before using this skill:
 
 ```bash
+npm --version
 npm install -g @larksuite/cli
 lark-cli config init
 lark-cli auth login --recommend
@@ -156,9 +159,11 @@ The underlying helper command is:
 "$HOME/.codex/skills/prd-fe-task/scripts/plan-lark-doc.sh" "<document-title-or-url-or-token>" "<repo-root>"
 ```
 
-The command fetches the Lark document and prints:
+The command resolves the source document, filters out obvious test-delivery/QA matches when searching by title, fetches the Lark document, and prints:
 
 - the resolved document reference
+- the actual fetched document URL and document ID when available
+- the document classification and selection note
 - configured frontend project paths
 - the suggested output path
 - the fetched Markdown content
@@ -189,6 +194,8 @@ The generated Markdown includes:
 - acceptance criteria
 - open questions
 
+When the PRD includes calculation formulas or examples, the generated tasks should include those rules and expected sample outputs. Explicit formulas should not be moved to open questions unless the source document itself is contradictory.
+
 ### Files
 
 ```text
@@ -217,7 +224,7 @@ For the full `lark-fe-skills` project roadmap, see the root README.
 
 - `SKILL.md` is the behavior definition used by Codex.
 - `README.md` is for human readers and GitHub documentation.
-- The helper scripts depend on `lark-cli` being installed, configured, and authorized.
+- The helper scripts depend on Node.js and an installed, configured, authorized `lark-cli`.
 - Repository-local config is kept in `.lark-fe-task/config.env`; the global `repos.json` is only an index and should not be edited manually.
 - This skill plans frontend tasks only; it does not implement code changes.
 - If multiple configured frontend paths could match a requirement, Codex should ask which path to use before writing the final task file.
@@ -250,10 +257,12 @@ For the full `lark-fe-skills` project roadmap, see the root README.
 ### 功能
 
 - 查找并读取 Lark/飞书需求文档。
+- 搜索标题时优先选择正式 PRD，避免误选同名提测、QA 日报/周报或自测文档。
 - 支持单前端项目，也支持 monorepo 下多个前端项目。
 - 已配置时，前台站点、后台管理端、运营后台等浏览器端项目都可以算前端项目。
 - 默认忽略原生 App 或移动端专属内容，除非这些内容影响浏览器端前端共用逻辑。
 - 将需求拆成可直接开发的前端子任务。
+- 保留 PRD 中的计算公式、样例计算、旧/新公式对比。
 - 输出代码定位线索、依赖顺序、验收点和待确认问题。
 - 将最终任务拆分写成 Markdown 文件。
 
@@ -273,9 +282,10 @@ For the full `lark-fe-skills` project roadmap, see the root README.
 
 ### 前置条件
 
-使用这个 skill 前，需要先安装并配置 `lark-cli`：
+使用这个 skill 前，需要先准备 Node.js，并安装配置 `lark-cli`：
 
 ```bash
+npm --version
 npm install -g @larksuite/cli
 lark-cli config init
 lark-cli auth login --recommend
@@ -378,9 +388,11 @@ $HOME/.codex/skills/prd-fe-task/config/repos.json
 "$HOME/.codex/skills/prd-fe-task/scripts/plan-lark-doc.sh" "<文档标题或链接或token>" "<repo-root>"
 ```
 
-这个命令会读取 Lark 文档，并输出：
+这个命令会定位源文档，搜索标题时过滤明显的提测/QA 候选，然后读取 Lark 文档，并输出：
 
 - 解析后的文档引用
+- 实际拉取的文档 URL 和文档 ID（如果有）
+- 文档分类和候选选择说明
 - 已配置的前端项目路径
 - 建议的输出路径
 - 拉取到的 Markdown 原文
@@ -411,6 +423,8 @@ $HOME/.codex/skills/prd-fe-task/config/repos.json
 - 验收标准
 - 待确认问题
 
+如果 PRD 包含计算公式或案例，生成任务时应把这些规则和样例结果写入相关任务与验收标准。除非原文互相矛盾，否则明确公式不应被放进待确认问题。
+
 ### 文件结构
 
 ```text
@@ -439,7 +453,7 @@ prd-fe-task/
 
 - `SKILL.md` 是 Codex 使用的行为定义。
 - `README.md` 是给人阅读的 GitHub 说明文档。
-- 辅助脚本依赖已经安装、配置并授权的 `lark-cli`。
+- 辅助脚本依赖 Node.js，以及已经安装、配置并授权的 `lark-cli`。
 - 仓库内配置保存在 `.lark-fe-task/config.env`；全局 `repos.json` 只是索引，不需要手动编辑。
 - 这个 skill 只负责拆解前端任务，不负责实现代码改动。
 - 如果多个已配置前端路径都可能匹配同一份需求，Codex 应先询问用户选择哪个路径，再写最终任务文件。

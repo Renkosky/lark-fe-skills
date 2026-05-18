@@ -8,8 +8,11 @@ import { homedir } from 'node:os'
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const packageRoot = resolve(__dirname, '..')
 const skillsRoot = join(packageRoot, 'skills')
-const packagedSkills = ['prd-fe-task']
+const packagedSkills = ['prd-fe-task', 'prd-fe-schedule']
 const uninstallableSkills = [...packagedSkills, 'lark-fe-task']
+const skillRuntimeDependencies = {
+  'prd-fe-schedule': ['yaml'],
+}
 
 function usage() {
   console.log(`lark-fe-skills
@@ -29,7 +32,9 @@ Commands:
 Examples:
   lark-fe-skills list
   lark-fe-skills path prd-fe-task
+  lark-fe-skills path prd-fe-schedule
   lark-fe-skills install prd-fe-task
+  lark-fe-skills install prd-fe-schedule
   lark-fe-skills uninstall prd-fe-task
   lark-fe-skills uninstall lark-fe-task`)
 }
@@ -75,6 +80,18 @@ function installSkill(skillName = 'prd-fe-task') {
     rmSync(target, { recursive: true, force: true })
   }
   cpSync(source, target, { recursive: true, force: true })
+
+  for (const dependencyName of skillRuntimeDependencies[skillName] || []) {
+    const dependencySource = join(packageRoot, 'node_modules', dependencyName)
+    const dependencyTarget = join(target, 'node_modules', dependencyName)
+    if (!existsSync(dependencySource)) {
+      console.error(`Runtime dependency not found: ${dependencyName}`)
+      console.error('Run npm install in the package before installing this skill.')
+      process.exit(1)
+    }
+    mkdirSync(dirname(dependencyTarget), { recursive: true })
+    cpSync(dependencySource, dependencyTarget, { recursive: true, force: true })
+  }
 
   console.log(`Installed ${skillName} to ${target}`)
 }

@@ -15,9 +15,10 @@ Global repository registry: `$HOME/.codex/skills/prd-fe-task/config/repos.json`
 
 ## Prerequisite
 
-Before using `+config` or `+plan`, make sure `lark-cli` is installed, configured, and authorized:
+Before using `+config` or `+plan`, make sure Node.js is available and `lark-cli` is installed, configured, and authorized:
 
 ```bash
+npm --version
 npm install -g @larksuite/cli
 lark-cli config init
 lark-cli auth login --recommend
@@ -117,11 +118,15 @@ Then follow the workflow below to inspect the relevant configured FE project pat
    - If the user gives a Feishu/Lark URL or token, fetch it directly with `lark-cli docs +fetch --as user --api-version v2 --doc "<url-or-token>" --doc-format markdown`.
    - If the user gives a title, search with `lark-cli drive +search --as user --query "<title>" --doc-types docx,doc,wiki --page-size 20 --format json`.
    - Prefer broad keyword search over `intitle:` when exact title search misses Wiki/DOCX results.
-   - When multiple results appear, prefer the exact title without `副本`; prefer non-cross-tenant results unless the user explicitly asks for an external/copy document.
+   - When multiple results appear, prefer the official PRD/requirement document over test-delivery, QA daily/weekly, release-check, or self-test documents, even when the titles share the same PR number.
+   - Prefer exact title/PR-number matches, `DOC`/`DOCX` results, non-cross-tenant results, and documents whose content includes PRD markers such as `需求背景`, `目标`, `需求详细`, `技术实现`, `计算公式`, or `原型`.
+   - Penalize or reject documents whose title or content is mainly `提测`, `自测`, `QA工作日报`, `QA工作周报`, `准出`, `环境准备`, or `风险说明`.
+   - If multiple credible PRD candidates remain close after scoring, stop and ask the user to choose the real PRD URL before writing the task Markdown.
 
 2. Read the document fully.
    - Fetch the selected document in Markdown.
    - If the document is inaccessible, unreadable, partial, or image/PDF-only without extractable text, stop and ask the user for a readable source before planning.
+   - If the fetched content is classified as a test-delivery/self-test document rather than a PRD, do not generate development tasks from it unless the user explicitly confirms that this is the intended source.
    - If fetched content contains embedded docs such as `<cite ... token="...">`, only follow them when they are required to understand the requested requirement.
    - Ignore native App/mobile-only sections unless they affect browser-based FE behavior; this skill plans browser/admin/frontend project work in the configured FE project paths.
 
@@ -152,6 +157,8 @@ Then follow the workflow below to inspect the relevant configured FE project pat
 - Group tasks by FE project path first when multiple configured projects are involved, then by user flow or feature area.
 - Every task must include: goal, affected FE scope, code-location clues, main changes, API/data/i18n/permission/tracking impact, acceptance checks, and dependencies.
 - Preserve product details from the document, especially modal behavior, validation order, state transitions, permission gates, routing, empty/loading/error states, and cross-project dependencies.
+- Preserve calculation details from the document. If the PRD contains `计算公式`, sample calculations, old/new formula comparisons, or struck-through formula notes, extract them into the relevant task details and acceptance checks.
+- Do not move explicit formulas into `待确认问题` unless the source document is internally contradictory or missing the formula. For tiered formulas, keep base cases, recurrence rules, and example outputs when present.
 - Put uncertain product behavior or missing backend contracts in `待确认问题`; do not invent behavior to make the plan look complete.
 - If the document is onboarding/reference material rather than a feature requirement, say so and produce a short reference-oriented breakdown instead of inventing development tasks.
 

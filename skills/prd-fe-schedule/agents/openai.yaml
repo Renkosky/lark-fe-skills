@@ -1,0 +1,4 @@
+interface:
+  display_name: "PRD FE Schedule"
+  short_description: "Configure, preview, and create Lark Base schedule records from frontend task Markdown."
+  default_prompt: "根据我提供的前端任务 Markdown 和排期 profile，预览或创建 Lark Base 排期记录。"
