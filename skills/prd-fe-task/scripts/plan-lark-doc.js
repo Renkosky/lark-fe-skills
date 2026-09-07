@@ -324,9 +324,10 @@ CONFIG_STATUS=${configStatus}
 CONFIG_SOURCE=${configSource}
 FE_PROJECT_PATHS=${feProjectPaths}
 OUTPUT_PATH=${outFile}
+IMPLEMENTATION_SPEC_PATH=${outFile.replace(/\.md$/, '-implementation-spec.md')}
 
 --- LARK_DOC_MARKDOWN_BEGIN ---
 ${content}
 --- LARK_DOC_MARKDOWN_END ---
 
-Next: choose the affected FE project path from FE_PROJECT_PATHS, inspect it, use references/task-breakdown-template.md, then write the final task breakdown to OUTPUT_PATH.`)
+Next: choose the affected FE project paths from FE_PROJECT_PATHS and inspect relevant entrypoints. Use references/task-breakdown-template.md for OUTPUT_PATH and references/implementation-spec-template.md for IMPLEMENTATION_SPEC_PATH. Keep matching Task IDs across both files; preserve source rules without inventing API contracts.`)

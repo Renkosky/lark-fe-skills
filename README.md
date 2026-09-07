@@ -14,7 +14,7 @@ Lark/Feishu based Codex skills for frontend requirement planning.
 
 `@renkosky/lark-fe-skills` packages Codex skills for Lark-based frontend workflows.
 
-The first packaged workflow includes `prd-fe-task` for task breakdowns and `prd-fe-schedule` for Lark Base schedule dry-runs.
+The workflow includes `prd-fe-task` for task summaries and implementation specs, `prd-fe-schedule` for Lark Base schedules, and `prd-fe-implement` for frontend development.
 
 ## 🚀 Install
 
@@ -43,6 +43,7 @@ Use it in Codex:
 ```text
 [$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +config
 [$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +plan <Lark document title, URL, or token>
+[$prd-fe-implement](~/.codex/skills/prd-fe-implement/SKILL.md) Implement Task 1 from <implementation-spec.md>
 ```
 
 ## 🧰 Prerequisites
@@ -66,6 +67,7 @@ lark-fe-skills path
 lark-fe-skills path <skill-name>
 lark-fe-skills install
 lark-fe-skills install <skill-name>
+lark-fe-skills update
 lark-fe-skills uninstall
 lark-fe-skills uninstall <skill-name>
 lark-fe-skills uninstall lark-fe-task
@@ -75,13 +77,17 @@ lark-fe-skills uninstall lark-fe-task
 
 | Skill | Description |
 | --- | --- |
-| `prd-fe-task` | Turn Lark/Feishu requirement documents into concrete frontend task breakdowns. |
+| `prd-fe-task` | Generate compact schedule tasks and a detailed companion implementation spec. |
 | `prd-fe-schedule` | Preview Lark Base schedule records from generated frontend task Markdown. |
+| `prd-fe-implement` | Implement tasks sequentially with code reuse, scoped mocks and verification. |
+
+`+plan` generates `<date>-<issue-id>.md` for scheduling and `<date>-<issue-id>-implementation-spec.md` for development, with matching Task IDs. The spec preserves field types, formatting, validation order, copy, formulas and failure branches, and separates source facts from implementation proposals. Send only the summary to scheduling.
 
 ## 📝 Notes
 
 - npm installation and Codex skill installation are separate steps.
 - This package installs skills to `~/.codex/skills`.
+- Use `lark-fe-skills update` to update the npm package to latest and reinstall packaged Codex skills.
 - Use `lark-fe-skills uninstall` to reset local Codex skill installation for first-run testing.
 - Use `lark-fe-skills uninstall lark-fe-task` to remove the legacy install directory.
 - Existing Lark skills may live under `~/.agents/skills`; that is a different source.
@@ -104,16 +110,12 @@ lark-fe-skills uninstall lark-fe-task
   - [x] Support dry-run previews from a profile without modifying Lark.
   - [x] Reduce token usage by printing compact dry-run summaries and writing full previews to local temp files.
   - [x] Add an explicit `+create` helper that requires confirmation/`--yes` before writing records.
-- [ ] Phase 3: Implement frontend tasks from generated Markdown.
-  - [ ] Default to implementing one task at a time to keep human review small and manageable.
-  - [ ] After each task, stop and report changed files, verification results, remaining tasks, mocks used, and unresolved questions.
-  - [ ] Continue to the next task only when the user explicitly asks to continue, or when the user explicitly requests multiple tasks in one batch.
-  - [ ] If one task is too large, split it into smaller implementation batches before editing code.
-  - [ ] Reuse existing project APIs, hooks, stores, components, permissions, i18n, and mock patterns before adding new code.
-  - [ ] Do not perform real backend integration in this phase; use existing reusable data or the project's mock system when API behavior is unavailable.
-  - [ ] Ask the user when required API fields, permission keys, status enums, or core product behavior cannot be found in the codebase.
-  - [ ] Keep changes scoped to the affected project paths and modules from the task Markdown.
-  - [ ] Verify each completed task with the most relevant available static checks, and clearly report any unrelated existing failures.
+- [x] Phase 3: Add `prd-fe-implement` instructions for frontend development from implementation specs.
+  - [x] Generate a companion spec with fields, validation, formulas, copy and traceable source coverage.
+  - [x] Default to one Task per run; continue sequentially for explicitly requested batches.
+  - [x] Reuse existing code and data; mock unavailable behavior without replacing working responses.
+  - [x] Track progress, validation, mocks and blockers in the spec.
+  - [ ] Validate the complete workflow against a real development task.
 - [ ] Phase 4: Backend integration and API handoff workflow.
   - [ ] Treat this phase as TBD until the backend handoff format is standardized.
   - [ ] Expected direction: use Lark as the API handoff and collaboration surface.
@@ -128,7 +130,7 @@ lark-fe-skills uninstall lark-fe-task
 
 `@renkosky/lark-fe-skills` 用于分发基于 Lark/飞书的前端需求工作流 Codex skills。
 
-首个工作流包含 `prd-fe-task` 和 `prd-fe-schedule`：前者生成前端任务拆分，后者基于任务 Markdown 生成 Lark Base 排期 dry-run 预览。
+工作流包含 `prd-fe-task`（任务概要与开发细则）、`prd-fe-schedule`（Lark Base 排期）和 `prd-fe-implement`（实际前端开发）。
 
 ## 🚀 安装
 
@@ -157,6 +159,7 @@ npm exec --package=@renkosky/lark-fe-skills -- lark-fe-skills install
 ```text
 [$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +config
 [$prd-fe-task](~/.codex/skills/prd-fe-task/SKILL.md) +plan <飞书文档标题、链接或 token>
+[$prd-fe-implement](~/.codex/skills/prd-fe-implement/SKILL.md) 实现 <implementation-spec.md> 的 Task 1
 ```
 
 ## 🧰 前置条件
@@ -180,6 +183,7 @@ lark-fe-skills path
 lark-fe-skills path <skill-name>
 lark-fe-skills install
 lark-fe-skills install <skill-name>
+lark-fe-skills update
 lark-fe-skills uninstall
 lark-fe-skills uninstall <skill-name>
 lark-fe-skills uninstall lark-fe-task
@@ -189,13 +193,17 @@ lark-fe-skills uninstall lark-fe-task
 
 | Skill | 说明 |
 | --- | --- |
-| `prd-fe-task` | 将 Lark/飞书需求文档拆解成可开发的前端任务。 |
+| `prd-fe-task` | 生成精简排期任务概要和配套开发细则。 |
 | `prd-fe-schedule` | 根据前端任务 Markdown 预览 Lark Base 排期记录。 |
+| `prd-fe-implement` | 逐项开发，复用代码、按需 Mock 并验证。 |
+
+`+plan` 同时生成用于排期的 `<日期>-<需求编号>.md` 和用于开发的 `<日期>-<需求编号>-implementation-spec.md`，两者 Task 编号一致。细则保留字段类型、格式化、校验顺序、完整文案、公式和异常分支，并区分原文事实与实现建议。排期只传概要文件。
 
 ## 📝 说明
 
 - npm 包安装和 Codex skill 安装是两步。
 - 本包默认安装到 `~/.codex/skills`。
+- 可以用 `lark-fe-skills update` 更新 npm 包到 latest，并重新安装包内 Codex skills。
 - 可以用 `lark-fe-skills uninstall` 清理本地 Codex skills，方便测试首次安装流程。
 - 可以用 `lark-fe-skills uninstall lark-fe-task` 清理旧版安装目录。
 - 已有 Lark skills 可能位于 `~/.agents/skills`，这是另一类来源。
@@ -218,16 +226,12 @@ lark-fe-skills uninstall lark-fe-task
   - [x] 支持基于 profile 的 dry-run 预览，不修改 Lark。
   - [x] 默认输出精简 dry-run 摘要，并把完整预览写入本地临时文件，降低 token 消耗。
   - [x] 新增显式 `+create` helper，要求确认/`--yes` 后才写入记录。
-- [ ] Phase 3：根据已生成的 Markdown 实际开发前端任务。
-  - [ ] 默认一次只实现一个 Task，控制代码改动粒度，方便人工 review。
-  - [ ] 每完成一个 Task 就暂停，并汇报改动文件、验证结果、剩余任务、使用的 mock 和未解决问题。
-  - [ ] 只有用户明确要求继续，或明确要求一次实现多个任务时，才继续处理后续 Task。
-  - [ ] 如果单个 Task 本身过大，先拆成更小的实现批次再改代码。
-  - [ ] 优先复用项目里已有的接口、hooks、stores、组件、权限、i18n 和 mock 模式，再考虑新增实现。
-  - [ ] 这一阶段不做真实后端接口对接；接口行为不可用时，优先使用已有可复用数据或项目 mock 体系。
-  - [ ] 如果 API 字段、权限 key、状态枚举或核心产品行为在代码里找不到，要先询问用户，不臆造。
-  - [ ] 代码改动只限制在任务 Markdown 标出的受影响项目路径和模块内。
-  - [ ] 每完成一个 Task 后运行最相关的静态检查，并明确说明是否存在无关历史失败。
+- [x] Phase 3：新增 `prd-fe-implement`，定义基于开发细则的前端实现流程。
+  - [x] 生成配套细则，覆盖字段、校验、公式、文案和来源追溯。
+  - [x] 默认一次一个 Task；明确要求批量时按顺序持续执行。
+  - [x] 复用现有代码与数据；未就绪行为使用 Mock，不覆盖可用真实数据。
+  - [x] 在细则中记录进度、验证、Mock 和阻塞。
+  - [ ] 用真实开发任务验证完整流程。
 - [ ] Phase 4：接口对接与后端交付文档工作流。
   - [ ] 这部分在后端接口交付格式统一前保持待定。
   - [ ] 预期方向：继续使用 Lark 作为接口交付和协作载体。

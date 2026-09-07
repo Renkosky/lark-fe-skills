@@ -40,6 +40,12 @@ cat >"$TASK_MD" <<'MD'
   - 校验生效。
 - 前置依赖: Task 1
 
+#### Task 3: 任务概要格式
+
+- 任务概要:
+  - 使用精简任务概要创建排期记录。
+  - 待确认: 后端字段是否已就绪。
+
 ## 依赖与开发顺序
 
 1. 这部分不应进入最后一个 task 的描述。
@@ -60,6 +66,7 @@ FIELDS_MULTI_JSON='{"data":{"fields":[
   {"id":"fld_formula","name":"Computed Name","type":"formula"}
 ]}}'
 AUTH_JSON='{"identity":"user","userName":"Demo User","userOpenId":"ou_demo"}'
+NESTED_AUTH_JSON='{"identity":"user","identities":{"user":{"status":"ready","openId":"ou_nested","userName":"Nested User"}},"userName":"Nested User"}'
 
 PRD_FE_SCHEDULE_TABLES_JSON="$TABLES_JSON" \
 PRD_FE_SCHEDULE_FIELDS_JSON="$FIELDS_MULTI_JSON" \
@@ -81,13 +88,49 @@ DEFAULT_OUTPUT="$(
   "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_MULTI" "$TASK_MD"
 )"
 
-grep -Fq "Preview records: 2" <<<"$DEFAULT_OUTPUT"
+grep -Fq "Preview records: 3" <<<"$DEFAULT_OUTPUT"
+
+# A companion spec must not become an extra scheduling candidate.
+cp "$TASK_MD" "${TASK_MD%.md}-implementation-spec.md"
+KEYWORD_OUTPUT="$(
+  cd "$TMP_DIR"
+  PRD_FE_SCHEDULE_TABLES_JSON="$TABLES_JSON" \
+  PRD_FE_SCHEDULE_FIELDS_JSON="$FIELDS_MULTI_JSON" \
+  PRD_FE_SCHEDULE_AUTH_JSON="$AUTH_JSON" \
+  "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_MULTI" "2026-05-18-pr-00001"
+)"
+grep -Fq "Preview records: 3" <<<"$KEYWORD_OUTPUT"
+if "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_MULTI" "${TASK_MD%.md}-implementation-spec.md" >"$TMP_DIR/spec-rejected.out" 2>&1; then
+  echo "Implementation specs must not be scheduled directly" >&2
+  exit 1
+fi
+grep -Fq "Use the companion task-summary Markdown" "$TMP_DIR/spec-rejected.out"
 grep -Fq "Demo User (ou_demo)" <<<"$DEFAULT_OUTPUT"
 grep -Fq "## Next Step" <<<"$DEFAULT_OUTPUT"
 grep -Fq "Full preview file:" <<<"$DEFAULT_OUTPUT"
 grep -Fq "Do not create records without explicit confirmation." <<<"$DEFAULT_OUTPUT"
 if grep -Fq "这部分不应进入最后一个 task 的描述" <<<"$DEFAULT_OUTPUT"; then
   echo "Parent sections should not be included in the final task description" >&2
+  exit 1
+fi
+
+OVERVIEW_FULL_OUTPUT="$(
+  PRD_FE_SCHEDULE_TABLES_JSON="$TABLES_JSON" \
+  PRD_FE_SCHEDULE_FIELDS_JSON="$FIELDS_MULTI_JSON" \
+  PRD_FE_SCHEDULE_AUTH_JSON="$AUTH_JSON" \
+  "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --full --profile "$PROFILE_MULTI" "$TASK_MD"
+)"
+grep -Fq "使用精简任务概要创建排期记录" <<<"$OVERVIEW_FULL_OUTPUT"
+
+NESTED_AUTH_OUTPUT="$(
+  PRD_FE_SCHEDULE_TABLES_JSON="$TABLES_JSON" \
+  PRD_FE_SCHEDULE_FIELDS_JSON="$FIELDS_MULTI_JSON" \
+  PRD_FE_SCHEDULE_AUTH_JSON="$NESTED_AUTH_JSON" \
+  "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_MULTI" "$TASK_MD"
+)"
+grep -Fq "Nested User (ou_nested)" <<<"$NESTED_AUTH_OUTPUT"
+if grep -Fq "has no user openId" <<<"$NESTED_AUTH_OUTPUT"; then
+  echo "Nested auth status should resolve the current user openId" >&2
   exit 1
 fi
 
@@ -103,7 +146,7 @@ MULTI_OUTPUT="$(
   "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_MULTI" "$TASK_MD"
 )"
 
-grep -Fq "Preview records: 5" <<<"$MULTI_OUTPUT"
+grep -Fq "Preview records: 6" <<<"$MULTI_OUTPUT"
 grep -Fq "more records hidden. Use --full to print all rows." <<<"$MULTI_OUTPUT"
 
 MULTI_FULL_OUTPUT="$(
@@ -144,7 +187,7 @@ SIMPLE_OUTPUT="$(
   "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_SIMPLE" "$TASK_MD"
 )"
 
-grep -Fq "Preview records: 2" <<<"$SIMPLE_OUTPUT"
+grep -Fq "Preview records: 3" <<<"$SIMPLE_OUTPUT"
 if grep -Fq "type |" <<<"$SIMPLE_OUTPUT"; then
   echo "Simple profile should not map or write task type" >&2
   exit 1
@@ -187,7 +230,7 @@ NO_ONCE_OUTPUT="$(
   PRD_FE_SCHEDULE_AUTH_JSON="$AUTH_JSON" \
   "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --profile "$PROFILE_NO_ONCE" "$TASK_MD"
 )"
-grep -Fq "Preview records: 2" <<<"$NO_ONCE_OUTPUT"
+grep -Fq "Preview records: 3" <<<"$NO_ONCE_OUTPUT"
 
 FIELDS_GENERIC_JSON='{"data":{"fields":[
   {"id":"fld_type","name":"Task Type","type":"select","options":[{"name":"Development"},{"name":"QA"},{"name":"Release"}]},
@@ -216,7 +259,7 @@ GENERIC_OUTPUT="$(
   "$ROOT_DIR/skills/prd-fe-schedule/scripts/dry-run-schedule.sh" --full --profile "$PROFILE_GENERIC_UPDATED" "$TASK_MD"
 )"
 
-grep -Fq "Preview records: 4" <<<"$GENERIC_OUTPUT"
+grep -Fq "Preview records: 5" <<<"$GENERIC_OUTPUT"
 grep -Fq "| qa | once | QA" <<<"$GENERIC_OUTPUT"
 
 FIELDS_FALLBACK_TITLE_JSON='{"data":{"fields":[

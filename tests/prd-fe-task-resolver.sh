@@ -55,6 +55,9 @@ OUTPUT="$(
 grep -Fq "DOCUMENT_URL=https://example.larksuite.com/docx/docxRealPrdToken000000" <<<"$OUTPUT"
 grep -Fq "DOCUMENT_ID=docxRealPrdToken000000" <<<"$OUTPUT"
 grep -Fq "DOCUMENT_CLASSIFICATION=prd" <<<"$OUTPUT"
+SUMMARY_PATH="$(sed -n 's/^OUTPUT_PATH=//p' <<<"$OUTPUT")"
+SPEC_PATH="$(sed -n 's/^IMPLEMENTATION_SPEC_PATH=//p' <<<"$OUTPUT")"
+[[ "$SPEC_PATH" == "${SUMMARY_PATH%.md}-implementation-spec.md" ]]
 grep -Fq "第一档n=1时，默认参数为0" <<<"$OUTPUT"
 grep -Fq "示例结果 = 基础值 * 当前档位比例 - 当前档位参数" <<<"$OUTPUT"
 grep -Fq "第二层级=250" <<<"$OUTPUT"

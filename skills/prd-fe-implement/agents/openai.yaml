@@ -1,0 +1,4 @@
+interface:
+  display_name: "PRD FE Implement"
+  short_description: "Implement frontend specs with reuse and scoped mocks."
+  default_prompt: "使用 $prd-fe-implement 根据开发细则完成下一个前端 Task，优先复用现有代码并验证结果。"

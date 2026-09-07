@@ -21,7 +21,7 @@ English | [中文](#中文)
 
 ### Overview
 
-`prd-fe-task` is a Codex skill for turning Lark/Feishu requirement documents into concrete frontend task breakdowns.
+`prd-fe-task` turns Lark/Feishu requirements into concise schedule summaries and detailed companion implementation specs from one source reading.
 
 It reads a Lark document by title, URL, or token, extracts the requirement content, inspects the configured frontend project path or paths enough to locate likely implementation areas, and writes a Markdown task plan under the configured output directory.
 
@@ -31,15 +31,16 @@ It reads a Lark document by title, URL, or token, extracts the requirement conte
 - Prefers official PRD documents over same-title test-delivery, QA daily/weekly, or self-test documents.
 - Supports one frontend project or multiple frontend projects in a monorepo.
 - Treats browser-based public sites, admin consoles, and other web frontends as frontend projects when configured.
-- Ignores native App or mobile-only content unless it affects shared browser frontend behavior.
+- Resolves Web/H5/admin scope from the configured projects; mobile screenshots alone do not imply native-App-only scope.
 - Splits requirements into actionable frontend tasks.
 - Preserves formulas, sample calculations, and old/new formula comparisons from the PRD.
-- Includes code-location clues, dependencies, acceptance checks, and open questions.
-- Writes the final task breakdown as a Markdown file.
+- Creates concise task titles and summaries suitable for Lark task descriptions.
+- Preserves requirement-defined interaction rules, formulas, examples, and genuinely open questions in each task summary.
+- Writes the final task summary as a Markdown file.
 
 ### When to Use
 
-Use this skill when you have a Lark/Feishu PRD, requirement document, or product spec and want Codex to create a frontend development task breakdown.
+Use this skill when you have a Lark/Feishu PRD, requirement document, or product spec and want Codex to create concise frontend task summaries for Lark scheduling.
 
 Example prompts:
 
@@ -76,7 +77,7 @@ Codex will:
 2. Fetch the document content as Markdown.
 3. Choose the affected configured frontend project path.
 4. Inspect relevant files under that project path.
-5. Generate a task breakdown Markdown file.
+5. Generate a compact task summary and a companion implementation spec with matching Task IDs.
 
 ### Configuration
 
@@ -178,21 +179,16 @@ Default output path:
 
 ```text
 <repo-root>/<output-dir>/<YYYY-MM-DD>-<requirement-id>.md
+<repo-root>/<output-dir>/<YYYY-MM-DD>-<requirement-id>-implementation-spec.md
 ```
 
 When the document title contains an issue ID such as `PR-00000`, the filename uses only that ID, for example `2026-05-15-pr-00000.md`. If no issue ID exists, it falls back to a short document title slug.
 
 Before writing the Markdown file, the skill ensures the configured output directory is listed in `<repo-root>/.gitignore`, for example `docs/frontend-tasks/`.
 
-The generated Markdown includes:
+The summary contains only `#### Task N: ...` and `任务概要` for Lark scheduling. The companion spec contains source/coverage, target paths, progress, field types and formatting, ordered validation, exact copy, formulas, state branches, verified reuse, mock boundaries, acceptance and open questions. Source facts, repository evidence and implementation proposals are labelled separately.
 
-- document metadata
-- requirement summary
-- affected frontend scope
-- frontend task list
-- dependency order
-- acceptance criteria
-- open questions
+Use the summary with `prd-fe-schedule` and the spec with `prd-fe-implement`. Development defaults to one Task per invocation; explicitly requested batches continue sequentially.
 
 When the PRD includes calculation formulas or examples, the generated tasks should include those rules and expected sample outputs. Explicit formulas should not be moved to open questions unless the source document itself is contradictory.
 
@@ -207,7 +203,8 @@ prd-fe-task/
 ├── config/
 │   └── repos.json
 ├── references/
-│   └── task-breakdown-template.md
+│   ├── task-breakdown-template.md
+│   └── implementation-spec-template.md
 └── scripts/
     ├── config.sh
     ├── list-configs.sh
@@ -250,9 +247,9 @@ For the full `lark-fe-skills` project roadmap, see the root README.
 
 ### 概览
 
-`prd-fe-task` 是一个 Codex skill，用于把 Lark/飞书需求文档拆解成可开发的前端任务。
+`prd-fe-task` 一次读取 Lark/飞书需求，生成用于排期的精简前端任务概要和用于开发的详细规格。
 
-它可以根据文档标题、链接或 token 读取 Lark 文档，提取需求内容，适度检查已配置的前端项目路径，然后在已配置的输出目录下生成 Markdown 任务拆分文档。
+它按标题、链接或 token 读取文档，检查相关代码复用线索，在已配置目录下输出两份 Task 编号一致的 Markdown。
 
 ### 功能
 
@@ -260,15 +257,15 @@ For the full `lark-fe-skills` project roadmap, see the root README.
 - 搜索标题时优先选择正式 PRD，避免误选同名提测、QA 日报/周报或自测文档。
 - 支持单前端项目，也支持 monorepo 下多个前端项目。
 - 已配置时，前台站点、后台管理端、运营后台等浏览器端项目都可以算前端项目。
-- 默认忽略原生 App 或移动端专属内容，除非这些内容影响浏览器端前端共用逻辑。
-- 将需求拆成可直接开发的前端子任务。
-- 保留 PRD 中的计算公式、样例计算、旧/新公式对比。
-- 输出代码定位线索、依赖顺序、验收点和待确认问题。
-- 将最终任务拆分写成 Markdown 文件。
+- 根据项目确认 Web/H5/后台范围，不单凭移动端截图判断为原生 App 专属需求。
+- 将需求拆成适合创建 Lark 任务的精简前端子任务。
+- 在每个任务概要中保留 PRD 的计算公式、样例计算、旧/新公式对比，以及必要的交互规则。
+- 将真正缺失的信息标注为 `待确认:`，不臆造需求行为。
+- 将最终任务概要写成 Markdown 文件。
 
 ### 适用场景
 
-当你有 Lark/飞书 PRD、需求文档或产品说明，并希望 Codex 生成前端开发任务拆分时，使用这个 skill。
+当你有 Lark/飞书 PRD、需求文档或产品说明，并希望 Codex 生成用于 Lark 排期的前端任务概要时，使用这个 skill。
 
 示例：
 
@@ -303,9 +300,8 @@ Codex 会：
 
 1. 使用 `lark-cli` 定位文档。
 2. 将文档内容读取为 Markdown。
-3. 判断命中的已配置前端项目路径。
-4. 检查该项目路径下的相关代码位置。
-5. 生成前端任务拆分 Markdown 文件。
+3. 将需求整理成任务标题和任务概要。
+4. 检查相关代码，生成任务概要及配套开发细则，两者 Task 编号一致。
 
 ### 配置
 
@@ -407,21 +403,16 @@ $HOME/.codex/skills/prd-fe-task/config/repos.json
 
 ```text
 <repo-root>/<output-dir>/<YYYY-MM-DD>-<requirement-id>.md
+<repo-root>/<output-dir>/<YYYY-MM-DD>-<requirement-id>-implementation-spec.md
 ```
 
 当文档标题里包含 `PR-00000` 这类需求编号时，文件名只使用该编号，例如 `2026-05-15-pr-00000.md`。如果没有需求编号，再回退到短标题 slug。
 
 写入 Markdown 前，skill 会确保配置的输出目录已经加入 `<repo-root>/.gitignore`，例如 `docs/frontend-tasks/`。
 
-生成的 Markdown 包含：
+概要仅包含 `#### Task N: ...` 和 `任务概要`，供 Lark 排期使用。配套细则包含来源与覆盖、目标项目、开发进度、字段类型与格式化、校验顺序、完整文案、公式、状态分支、已验证复用、Mock 边界、验收与待确认项，并区分原文事实、代码依据与实现建议。
 
-- 文档信息
-- 需求概览
-- 影响范围
-- 前端子任务列表
-- 依赖与开发顺序
-- 验收标准
-- 待确认问题
+概要交给 `prd-fe-schedule`，细则交给 `prd-fe-implement`。开发默认一次一个 Task；明确要求批量时按顺序继续。
 
 如果 PRD 包含计算公式或案例，生成任务时应把这些规则和样例结果写入相关任务与验收标准。除非原文互相矛盾，否则明确公式不应被放进待确认问题。
 
@@ -436,7 +427,8 @@ prd-fe-task/
 ├── config/
 │   └── repos.json
 ├── references/
-│   └── task-breakdown-template.md
+│   ├── task-breakdown-template.md
+│   └── implementation-spec-template.md
 └── scripts/
     ├── config.sh
     ├── list-configs.sh

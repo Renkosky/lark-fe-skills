@@ -184,6 +184,17 @@ function authJson() {
   }
 }
 
+function currentUserFromAuth(auth) {
+  const userIdentity = auth?.identities?.user || {}
+  const identity = String(auth?.identity || (userIdentity.status === 'ready' ? 'user' : ''))
+
+  return {
+    identity,
+    openId: String(auth?.userOpenId || userIdentity.userOpenId || userIdentity.openId || ''),
+    name: String(auth?.userName || userIdentity.userName || userIdentity.name || ''),
+  }
+}
+
 function findConfigUpwards(startDir) {
   let dir = resolve(startDir)
   while (dir !== dirname(dir)) {
@@ -212,6 +223,9 @@ function sourceConfigEnv(path) {
 }
 
 function resolveTaskFile(input) {
+  if (String(input).toLowerCase().endsWith('-implementation-spec.md')) {
+    die('Use the companion task-summary Markdown for scheduling, not the implementation spec.', 2)
+  }
   if (existsSync(input) && statSync(input).isFile()) return resolve(input)
   let repoRoot = process.cwd()
   let outputDir = 'docs/frontend-tasks'
@@ -236,6 +250,7 @@ function resolveTaskFile(input) {
     const result = spawnSync('find', [dir, '-maxdepth', '1', '-name', '*.md', '-type', 'f'], { encoding: 'utf8' })
     return result.status === 0 ? result.stdout.split(/\r?\n/).filter(Boolean) : []
   }).filter((path, index, arr) => (
+    !basename(path).toLowerCase().endsWith('-implementation-spec.md') &&
     (basename(path).toLowerCase().includes(query) || path.toLowerCase().includes(query)) &&
     arr.indexOf(path) === index
   ))
@@ -272,7 +287,7 @@ function parseTasks(taskFile) {
     const block = md.slice(start, end)
     return {
       title: match[1].trim(),
-      goal: sectionValue(block, '任务目标'),
+      goal: sectionValue(block, '任务概要') || sectionValue(block, '任务目标'),
       changes: sectionValue(block, '主要改动点'),
       acceptance: sectionValue(block, '验收点'),
       dependencies: sectionValue(block, '前置依赖'),
@@ -331,7 +346,7 @@ function buildRecordRule(typeValue, mode, index) {
     mode,
     title: mode === 'perTask' ? '{{task.title}}' : String(typeValue || 'Summary'),
     description: mode === 'perTask'
-      ? '{{task.goal}}\n{{task.changes}}\n{{task.acceptance}}\n前置依赖: {{task.dependencies}}'
+      ? '{{task.goal}}\n{{task.changes}}\n{{task.acceptance}}\n{{task.dependencies}}'
       : `根据前端任务拆分自动生成的${typeValue || 'summary'}汇总任务。`,
   }
   if (typeValue) record.type = typeValue
@@ -484,8 +499,9 @@ function renderTemplate(template, task, requirementId) {
 
 function buildRows(profile, tasks, requirementId, auth) {
   const defaults = profile.defaults || {}
-  const ownerId = String(auth.identity || '') === 'user' ? String(auth.userOpenId || '') : ''
-  const ownerName = String(auth.userName || '')
+  const currentUser = currentUserFromAuth(auth)
+  const ownerId = currentUser.identity === 'user' ? currentUser.openId : ''
+  const ownerName = currentUser.name
   const ownerValue = defaults.assignee === 'currentUser' && ownerId ? [{ id: ownerId }] : null
   const ownerLabel = ownerValue ? `${ownerName || ownerId} (${ownerId})` : ''
   const rows = []
@@ -532,7 +548,7 @@ function validateValues(profile, mappedFields, rows) {
     }
   }
   if (defaults.assignee === 'currentUser' && rows.some((row) => row.assignee === null)) {
-    pending.push('Assignee defaults to currentUser, but lark-cli auth status has no userOpenId.')
+    pending.push('Assignee defaults to currentUser, but lark-cli auth status has no user openId.')
   }
   return pending
 }

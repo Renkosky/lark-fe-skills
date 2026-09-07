@@ -7,7 +7,7 @@ description: Turn Feishu/Lark requirement documents into concrete frontend task 
 
 ## Overview
 
-Use this skill to produce a development-ready FE task breakdown from a Feishu/Lark requirement document. Phase 1 only plans tasks and writes a Markdown task file; it does not implement code changes.
+Produce two linked artifacts from one reading of a Feishu/Lark requirement: a concise task summary for scheduling and a detailed implementation specification for development. This skill does not implement app code.
 
 Default repo root: the current repository root, referred to below as `<repo-root>`  
 Default output directory: `docs/frontend-tasks`  
@@ -110,7 +110,7 @@ The helper command resolves config in this order, fetches the document Markdown 
 4. If the registry has exactly one repo, use it.
 5. If the registry has multiple repos, stop and ask the user which repo root to use.
 
-Then follow the workflow below to inspect the relevant configured FE project path and write the final task breakdown Markdown.
+Then follow the workflow below and write both artifacts. These shortcuts are agent instructions in Codex, not additional shell commands.
 
 ## Workflow
 
@@ -123,63 +123,52 @@ Then follow the workflow below to inspect the relevant configured FE project pat
    - Penalize or reject documents whose title or content is mainly `提测`, `自测`, `QA工作日报`, `QA工作周报`, `准出`, `环境准备`, or `风险说明`.
    - If multiple credible PRD candidates remain close after scoring, stop and ask the user to choose the real PRD URL before writing the task Markdown.
 
-2. Read the document fully.
+2. Read the requested scope fully.
    - Fetch the selected document in Markdown.
-   - If the document is inaccessible, unreadable, partial, or image/PDF-only without extractable text, stop and ask the user for a readable source before planning.
+   - For a named section, read that whole section and its necessary references. For a full PRD, read the whole document. Check pagination/truncation; recover missing chunks before generating final artifacts.
+   - Inspect relevant prototypes, images, tables, and attachments with available Lark tools. If required content cannot be read, identify the exact gap and request a readable source; never claim full coverage from text alone.
    - If the fetched content is classified as a test-delivery/self-test document rather than a PRD, do not generate development tasks from it unless the user explicitly confirms that this is the intended source.
    - If fetched content contains embedded docs such as `<cite ... token="...">`, only follow them when they are required to understand the requested requirement.
-   - Ignore native App/mobile-only sections unless they affect browser-based FE behavior; this skill plans browser/admin/frontend project work in the configured FE project paths.
+   - Resolve scope against the configured frontend paths, including public sites, admin consoles, and H5. A mobile screenshot alone does not establish a native-App-only requirement. Ask about ambiguous target projects; exclude confirmed out-of-scope sections explicitly.
 
-3. Decide the affected FE project path.
-   - If the document clearly names a configured project path or business surface, use that path.
-   - In a monorepo, configured FE paths may include multiple projects such as a public web app and admin apps.
-   - If the document points to a FE project that is not configured, or if multiple configured paths are plausible, ask the user which project path to include before writing the final Markdown.
-   - For a non-monorepo project, the configured FE path may be `.`.
+3. Inspect relevant configured frontend entrypoints and nearby reusable components, data contracts, validation, permissions, i18n, and mock conventions. Record only verified relative paths and contracts in the spec. Distinguish source facts, repository evidence, proposed UI models, and unresolved backend contracts.
 
-4. Inspect the repository just enough to ground the plan.
-   - Check likely affected FE entrypoints under the selected configured FE project path or paths.
-   - Use `rg`/`rg --files` to find existing pages, components, services, stores, i18n, permissions, and tracking patterns mentioned by the requirement.
-   - Do not edit app code in this phase.
-
-5. Write the task breakdown Markdown.
-   - Use `references/task-breakdown-template.md`.
+4. Write the task summary and implementation specification.
+   - Read `references/task-breakdown-template.md` and `references/implementation-spec-template.md`.
    - Before writing, ensure `<repo-root>/.gitignore` contains the configured output directory, for example `docs/frontend-tasks/`; append it if missing so generated task files are not committed.
    - Save to `<repo-root>/<output-dir>/<YYYY-MM-DD>-<requirement-id>.md` when the document title contains an issue ID such as `PR-00000`.
    - If no issue ID exists, save to `<repo-root>/<output-dir>/<YYYY-MM-DD>-<document-title-slug>.md`.
    - Use lowercase ASCII filenames; keep the slug short and avoid adding extra business keywords when an issue ID is available.
+   - Write the companion `<same-basename>-implementation-spec.md` in the same output directory. The helper prints `OUTPUT_PATH` and `IMPLEMENTATION_SPEC_PATH`; it fetches source and suggests paths, while the agent writes the artifacts.
+   - Honor repository-specific artifact paths before the default. Keep both files within the ignored planning directory.
+   - Use identical Task IDs and titles across both files. Preserve IDs on revisions, and preserve human edits and any existing implementation progress.
+   - Write Markdown directly with the available file editor; do not generate one-off write scripts.
 
 ## Task Rules
 
-- Split work into tasks that are directly actionable for a frontend engineer.
-- Only include affected configured FE project paths/modules/pages. Do not write "not involved" rows for projects that are out of scope.
-- Treat browser-based public sites, admin consoles, and other web frontends as FE projects when they are configured.
-- Ignore native App/mobile-only content unless it clarifies shared browser FE requirements.
-- Group tasks by FE project path first when multiple configured projects are involved, then by user flow or feature area.
-- Every task must include: goal, affected FE scope, code-location clues, main changes, API/data/i18n/permission/tracking impact, acceptance checks, and dependencies.
-- Preserve product details from the document, especially modal behavior, validation order, state transitions, permission gates, routing, empty/loading/error states, and cross-project dependencies.
-- Preserve calculation details from the document. If the PRD contains `计算公式`, sample calculations, old/new formula comparisons, or struck-through formula notes, extract them into the relevant task details and acceptance checks.
-- Do not move explicit formulas into `待确认问题` unless the source document is internally contradictory or missing the formula. For tiered formulas, keep base cases, recurrence rules, and example outputs when present.
-- Put uncertain product behavior or missing backend contracts in `待确认问题`; do not invent behavior to make the plan look complete.
-- If the document is onboarding/reference material rather than a feature requirement, say so and produce a short reference-oriented breakdown instead of inventing development tasks.
+- Split work into concise, actionable frontend tasks intended for Lark task creation.
+- In the schedule summary, write only `#### Task N: <title>` and `任务概要` for every task, following `references/task-breakdown-template.md`.
+- Keep app names, code locations, APIs, acceptance checks, and dependency sections in the companion spec, not in the schedule summary.
+- Keep all product detail needed to understand the task in `任务概要`, including modal behavior, validation order, state transitions, permission gates, routing, and important loading/error behavior.
+- Preserve document-defined formulas, examples, and old/new comparisons in the relevant task overview.
+- Mark genuinely unknown product or backend details as `待确认:` inside the relevant task overview. Do not invent behavior.
+- In the spec, preserve all in-scope product details: exact copy, field semantics, types, formatting/rounding, validation triggers/order, formulas, examples, status transitions and failure branches. Do not infer transactions, API enums, field names, or balance handling from desired UI behavior.
+- If the document is onboarding/reference material rather than a feature requirement, state that no development task should be created instead of inventing tasks; no implementation spec is needed.
 
 ## Verification
 
 Before finishing, verify:
 
-- The Markdown file exists in `docs/frontend-tasks`.
+- Both Markdown files exist in the resolved output directory and have matching Task IDs/titles.
 - The output directory is ignored by `<repo-root>/.gitignore`.
-- The task list is concrete enough to implement without rereading the source document for basic sequencing.
+- Every generated task has only a concise title and `任务概要` suitable for a Lark task description.
 - No app source files were changed.
-- Any missing requirement details are listed under `待确认问题`.
+- Any missing requirement details are marked as `待确认:` in the relevant task overview.
+- The spec's coverage table accounts for every in-scope section, including fields, copy, formulas, examples and error paths; omissions and contradictory requirements remain explicit.
+- Report both file links. Pass only the compact summary to `prd-fe-schedule`; use the companion spec with `prd-fe-implement`.
 
-## TODO / Roadmap
+## 中文要点
 
-Planned but not implemented yet:
+一次读取需求，同时生成用于排期的精简概要和用于开发的详细规格。两份文档保持相同 Task 编号；字段类型、格式化、校验顺序、完整文案、公式案例及异常分支放入开发细则。区分原文要求、已验证代码、实现建议与待确认项，不补造接口契约。仅生成文档，不修改业务代码。
 
-- Phase 2: turn generated frontend task Markdown into Lark schedule tasks.
-  - Parse tasks from generated Markdown files, using `#### Task N: ...` sections as the initial task boundary.
-  - Accept a Lark schedule Base URL or title, because different teams store schedules in different places.
-  - Read the target Base schema before mapping fields, including task name, task description, task status, start time, and end time.
-  - Read custom task status options from the Base; do not invent status tags.
-  - First implementation should be dry-run only: show the mapped records that would be created, but do not write to Lark.
-  - Later implementation can add a confirmation step and then create records in the schedule Base.
+排期使用 `prd-fe-schedule`；开发使用 `prd-fe-implement`。完整路线图见项目根 README。
