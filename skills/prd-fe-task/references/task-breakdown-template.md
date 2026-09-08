@@ -7,7 +7,7 @@ Use this compact template for task Markdown that will be turned into Lark schedu
 
 ## 任务列表
 
-#### Task 1: <Concise actionable task title>
+### Task 1: <Concise actionable task title>
 
 - 任务概要:
   - <The required UI or operational behavior.>
@@ -15,7 +15,7 @@ Use this compact template for task Markdown that will be turned into Lark schedu
   - <Exact calculation formula or example result when the document defines one.>
   - <待确认: only when a required product or backend detail is genuinely missing.>
 
-#### Task 2: <Concise actionable task title>
+### Task 2: <Concise actionable task title>
 
 - 任务概要:
   - <Task-specific summary.>
@@ -28,5 +28,5 @@ Rules:
 - Keep each task summary concise enough to fit naturally in a Lark task description.
 - Preserve document-defined formulas, examples, validation order, state transitions, and permission rules in the relevant task summary.
 - Put unknown details in the relevant task summary as `待确认:`; do not invent behavior.
-- Keep `#### Task N:` headings exactly so `prd-fe-schedule` can parse the file.
+- Keep `### Task N:` headings exactly so tasks stay visually prominent and `prd-fe-schedule` can parse the file.
 - For onboarding or reference-only documents, create no development tasks. State this once under `## 任务列表`.

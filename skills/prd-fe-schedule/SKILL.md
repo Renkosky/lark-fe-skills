@@ -145,7 +145,7 @@ Recommended invocation:
    - If multiple matching files exist, stop and ask the user which one to use.
 
 2. Parse frontend tasks.
-   - Treat `#### Task N: ...` headings as task boundaries.
+   - Treat `### Task N: ...` and legacy `#### Task N: ...` headings as task boundaries.
    - Extract task title, `任务目标`, `主要改动点`, `验收点`, and `前置依赖`.
    - If no task blocks are found, stop and ask for a valid Phase 1 task Markdown.
 

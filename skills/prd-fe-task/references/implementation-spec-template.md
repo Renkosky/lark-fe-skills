@@ -25,41 +25,41 @@ Read this when generating the companion implementation spec. Adapt sections to t
 | --- | --- | --- |
 | Task 1 | 未开始 | <dependencies or none> |
 
-#### Task 1: <Same title as schedule summary>
+### Task 1: <Same title as schedule summary>
 
-### 目标与依赖
+#### 目标与依赖
 
 <User outcome, entrypoint, required previous tasks, source section.>
 
-### 需求行为与界面文案
+#### 需求行为与界面文案
 
 <Controls, defaults, visibility, permissions, routes, exact labels/placeholders/tooltips/modal copy, button outcomes. Include source locators for rules.>
 
-### 字段与数据规则
+#### 字段与数据规则
 
 | 字段/含义 | 控件 | 数据类型与依据 | 数据来源/默认值 | 展示/精度/舍入/单位 | 校验时机与顺序 | 提交转换 |
 | --- | --- | --- | --- | --- | --- | --- |
 | <label> | <input/select/display> | <verified DTO type or explicitly proposed UI type> | <source or unknown> | <exact source rule or unknown> | <input/blur/submit, ordered rule IDs> | <verified conversion or pending contract> |
 
-### 校验与状态流转
+#### 校验与状态流转
 
 <Ordered steps with trigger, condition, success and failure outcomes. Include loading, duplicate submission, empty data, cancellation, switching/reset behavior where defined. Label proposed behavior separately.>
 
-### 公式与示例
+#### 公式与示例
 
 <Preserve exact formulas, units, thresholds, old/new distinction, source sample inputs and expected results. Flag contradictions; do not silently correct them.>
 
-### 代码复用与接口/Mock
+#### 代码复用与接口/Mock
 
 - 已验证复用: <relative file paths and existing components/hooks/contracts; or not found>
 - 接口契约: <verified method/fields/enums or explicitly unknown; no invented backend endpoints>
 - Mock: <only missing data/branches, location and activation convention; do not override working real data>
 
-### 验收
+#### 验收
 
 - [ ] <Observable behavior with inputs and expected outcomes, including boundary/error cases.>
 
-### 待确认
+#### 待确认
 
 - <Specific missing/contradictory fact, source, affected behavior and whether it blocks this task.>
 ```

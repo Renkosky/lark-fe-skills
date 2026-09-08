@@ -186,7 +186,7 @@ When the document title contains an issue ID such as `PR-00000`, the filename us
 
 Before writing the Markdown file, the skill ensures the configured output directory is listed in `<repo-root>/.gitignore`, for example `docs/frontend-tasks/`.
 
-The summary contains only `#### Task N: ...` and `任务概要` for Lark scheduling. The companion spec contains source/coverage, target paths, progress, field types and formatting, ordered validation, exact copy, formulas, state branches, verified reuse, mock boundaries, acceptance and open questions. Source facts, repository evidence and implementation proposals are labelled separately.
+The summary contains only `### Task N: ...` and `任务概要` for Lark scheduling. The companion spec contains source/coverage, target paths, progress, field types and formatting, ordered validation, exact copy, formulas, state branches, verified reuse, mock boundaries, acceptance and open questions. Source facts, repository evidence and implementation proposals are labelled separately.
 
 Use the summary with `prd-fe-schedule` and the spec with `prd-fe-implement`. Development defaults to one Task per invocation; explicitly requested batches continue sequentially.
 
@@ -410,7 +410,7 @@ $HOME/.codex/skills/prd-fe-task/config/repos.json
 
 写入 Markdown 前，skill 会确保配置的输出目录已经加入 `<repo-root>/.gitignore`，例如 `docs/frontend-tasks/`。
 
-概要仅包含 `#### Task N: ...` 和 `任务概要`，供 Lark 排期使用。配套细则包含来源与覆盖、目标项目、开发进度、字段类型与格式化、校验顺序、完整文案、公式、状态分支、已验证复用、Mock 边界、验收与待确认项，并区分原文事实、代码依据与实现建议。
+概要仅包含 `### Task N: ...` 和 `任务概要`，供 Lark 排期使用。配套细则包含来源与覆盖、目标项目、开发进度、字段类型与格式化、校验顺序、完整文案、公式、状态分支、已验证复用、Mock 边界、验收与待确认项，并区分原文事实、代码依据与实现建议。
 
 概要交给 `prd-fe-schedule`，细则交给 `prd-fe-implement`。开发默认一次一个 Task；明确要求批量时按顺序继续。
 

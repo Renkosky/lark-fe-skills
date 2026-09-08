@@ -147,7 +147,7 @@ Then follow the workflow below and write both artifacts. These shortcuts are age
 ## Task Rules
 
 - Split work into concise, actionable frontend tasks intended for Lark task creation.
-- In the schedule summary, write only `#### Task N: <title>` and `任务概要` for every task, following `references/task-breakdown-template.md`.
+- In the schedule summary, write only `### Task N: <title>` and `任务概要` for every task, following `references/task-breakdown-template.md`.
 - Keep app names, code locations, APIs, acceptance checks, and dependency sections in the companion spec, not in the schedule summary.
 - Keep all product detail needed to understand the task in `任务概要`, including modal behavior, validation order, state transitions, permission gates, routing, and important loading/error behavior.
 - Preserve document-defined formulas, examples, and old/new comparisons in the relevant task overview.

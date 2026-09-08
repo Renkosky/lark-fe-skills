@@ -278,22 +278,25 @@ function sectionValue(block, label) {
 
 function parseTasks(taskFile) {
   const md = readFileSync(taskFile, 'utf8')
-  const matches = [...md.matchAll(/^####\s+Task\s+\d+\s*[:：]\s*(.+)$/gm)]
+  const matches = [...md.matchAll(/^(#{3,4})\s+Task\s+\d+\s*[:：]\s*(.+)$/gm)]
   const tasks = matches.map((match, index) => {
     const start = match.index + match[0].length
     const nextTask = index + 1 < matches.length ? matches[index + 1].index : md.length
-    const nextParentHeading = md.slice(start, nextTask).match(/^#{1,3}\s+/m)
+    const taskLevel = match[1].length
+    const nextParentHeading = md
+      .slice(start, nextTask)
+      .match(new RegExp(`^#{1,${taskLevel - 1}}\\s+`, 'm'))
     const end = nextParentHeading ? start + nextParentHeading.index : nextTask
     const block = md.slice(start, end)
     return {
-      title: match[1].trim(),
+      title: match[2].trim(),
       goal: sectionValue(block, '任务概要') || sectionValue(block, '任务目标'),
       changes: sectionValue(block, '主要改动点'),
       acceptance: sectionValue(block, '验收点'),
       dependencies: sectionValue(block, '前置依赖'),
     }
   })
-  if (!tasks.length) die('No task blocks found. Expected headings like: #### Task 1: ...')
+  if (!tasks.length) die('No task blocks found. Expected headings like: ### Task 1: ...')
   return [md, tasks]
 }
 
